@@ -7,9 +7,11 @@ SNIPPETS_ARG_TYPES = {
     'get_unimodal_ODF.m': {
         'ensure_types': {'modalOrientation': '1D_matrix', 'halfwidth': 'double'},
     },
-    'export_ODF.m': {
-        'defaults': {'fileName': 'ODF.txt'},
-    }
+    'export_ODF.m': {'defaults': {'fileName': 'ODF.txt'}},
+    'get_ODF_from_CTF_file.m': {},
+    'sample_ODF_orientations.m': {'ensure_types': {'numOrientations': 'double'}},
+    'load_ODF.m': {'defaults': {'ODF_path': 'ODF.txt'}},
+    'export_orientations.m': {'defaults': {'fileName': 'orientations.txt'}},
 }
 
 
@@ -54,11 +56,12 @@ def get_wrapper_script(script_name, snippet_args):
 
     optional_ins = set(all_specified_args) - set(all_req_args)
 
+    includes = [i['name'] for i in snippet_args]
     parser_add_opt = []
     for i in optional_ins:
         opt_default = None
         for k, v in SNIPPETS_ARG_TYPES.items():
-            if i in v.get('defaults', {}):
+            if k in includes and i in v.get('defaults', {}):
                 opt_default = v['defaults'][i]
         if not opt_default:
             raise ValueError(f'No default found for argument: {i}')
@@ -70,7 +73,6 @@ def get_wrapper_script(script_name, snippet_args):
                                      for i in all_specified_args])
 
     ensure_types = []
-    includes = [i['name'] for i in snippet_args]
     for i in snippet_args:
         snip_arg_types = SNIPPETS_ARG_TYPES[i['name']].get('ensure_types')
         if not snip_arg_types:
