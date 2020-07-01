@@ -5,7 +5,11 @@ from pkg_resources import resource_string
 
 SNIPPETS_ARG_TYPES = {
     'get_unimodal_ODF.m': {
-        'ensure_types': {'modalOrientation': '1D_matrix', 'halfwidth': 'double'},
+        'ensure_types': {
+            'modalOrientationUVW': '1D_matrix',
+            'modalOrientationHKL': '1D_matrix',
+            'halfwidth': 'double',
+        },
     },
     'export_ODF.m': {'defaults': {'fileName': 'ODF.txt'}},
     'get_ODF_from_CTF_file.m': {},

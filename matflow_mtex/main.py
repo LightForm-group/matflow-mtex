@@ -16,7 +16,13 @@ def write_unimodal_ODF():
     snippets = [
         {
             'name': 'get_unimodal_ODF.m',
-            'req_args': ['crystalSym', 'specimenSym', 'modalOrientation', 'halfwidth'],
+            'req_args': [
+                'crystalSym',
+                'specimenSym',
+                'modalOrientationHKL',
+                'modalOrientationUVW',
+                'halfwidth',
+            ],
         },
         {
             'name': 'export_ODF.m',
@@ -151,7 +157,8 @@ def parse_orientations(path):
 
 @cli_format_mapper(input_name='crystal_symmetry', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='specimen_symmetry', task='get_model_texture', method='unimodal')
-@cli_format_mapper(input_name='modal_orientation', task='get_model_texture', method='unimodal')
+@cli_format_mapper(input_name='modal_orientation_hkl', task='get_model_texture', method='unimodal')
+@cli_format_mapper(input_name='modal_orientation_uvw', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='halfwidth', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='CTF_file_path', task='estimate_ODF', method='from_CTF_file')
 @cli_format_mapper(input_name='specimen_symmetry', task='estimate_ODF', method='from_CTF_file')

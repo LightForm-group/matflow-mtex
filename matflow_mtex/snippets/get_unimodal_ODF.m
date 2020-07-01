@@ -1,6 +1,7 @@
-function ODF = get_unimodal_ODF(crystalSym, specimenSym, modalOrientation, halfwidth)
+function ODF = get_unimodal_ODF(crystalSym, specimenSym, modalOrientationHKL, modalOrientationUVW, halfwidth)
     crystalSym = crystalSymmetry(crystalSym);
     specimenSym = specimenSymmetry(specimenSym);
-    ori = orientation('Euler', modalOrientation*degree, crystalSym, specimenSym);
-    ODF = unimodalODF(ori, 'halfwidth', halfwidth*degree);
+    psi = deLaValleePoussinKernel('halfwidth', halfwidth*degree);
+    ori = orientation.byMiller(modalOrientationHKL, modalOrientationUVW, crystalSym, specimenSym);
+    ODF = unimodalODF(ori, psi);
 end
