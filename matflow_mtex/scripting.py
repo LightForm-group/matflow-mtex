@@ -16,6 +16,7 @@ SNIPPETS_ARG_TYPES = {
             'halfwidth': 'double',
         },
     },
+    'get_random_ODF.m': {'ensure_types': {'numOrientations': 'double'}},
     'export_ODF.m': {'defaults': {'fileName': 'ODF.txt'}},
     'get_ODF_from_CTF_file.m': {},
     'sample_ODF_orientations.m': {'ensure_types': {'numOrientations': 'double'}},

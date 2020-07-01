@@ -59,6 +59,28 @@ def write_fibre_ODF():
     return out
 
 
+@sources_mapper(task='get_model_texture', method='random', script='write_random_ODF')
+def write_random_ODF():
+
+    script_name = 'write_random_ODF.m'
+    snippets = [
+        {
+            'name': 'get_random_ODF.m',
+            'req_args': ['crystalSym', 'specimenSym', 'numOrientations'],
+        },
+        {
+            'name': 'export_ODF.m',
+        },
+    ]
+    out = {
+        'script': {
+            'content': get_wrapper_script(script_name, snippets),
+            'filename': script_name,
+        }
+    }
+    return out
+
+
 @sources_mapper(task='estimate_ODF', method='from_CTF_file', script='estimate_ODF')
 def estimate_ODF_from_CTF_file():
 
@@ -124,6 +146,7 @@ def write_ODF_file(path, ODF):
 
 @output_mapper(output_name='ODF', task='get_model_texture', method='unimodal')
 @output_mapper(output_name='ODF', task='get_model_texture', method='fibre')
+@output_mapper(output_name='ODF', task='get_model_texture', method='random')
 @output_mapper(output_name='ODF', task='estimate_ODF', method='from_CTF_file')
 def parse_MTEX_ODF_file(path):
 
@@ -180,8 +203,10 @@ def parse_orientations(path):
 
 @cli_format_mapper(input_name='crystal_symmetry', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='crystal_symmetry', task='get_model_texture', method='fibre')
+@cli_format_mapper(input_name='crystal_symmetry', task='get_model_texture', method='random')
 @cli_format_mapper(input_name='specimen_symmetry', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='specimen_symmetry', task='get_model_texture', method='fibre')
+@cli_format_mapper(input_name='specimen_symmetry', task='get_model_texture', method='random')
 @cli_format_mapper(input_name='specimen_symmetry', task='estimate_ODF', method='from_CTF_file')
 @cli_format_mapper(input_name='modal_orientation_hkl', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='modal_orientation_uvw', task='get_model_texture', method='unimodal')
