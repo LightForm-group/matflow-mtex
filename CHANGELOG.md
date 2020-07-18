@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.1.2] - 2020.07.18
+
+### Added
+
+- Support generating an ODF from CRC (and CPR) EBSD files (in addition to existing CTF file support).
+
 ## [0.1.1] - 2020.07.01
 
 ### Added
