@@ -19,6 +19,7 @@ SNIPPETS_ARG_TYPES = {
     'get_random_ODF.m': {'ensure_types': {'numOrientations': 'double'}},
     'export_ODF.m': {'defaults': {'fileName': 'ODF.txt'}},
     'get_ODF_from_CTF_file.m': {},
+    'get_ODF_from_CRC_file.m': {},
     'sample_ODF_orientations.m': {'ensure_types': {'numOrientations': 'double'}},
     'load_ODF.m': {'defaults': {'ODF_path': 'ODF.txt'}},
     'export_orientations.m': {'defaults': {'fileName': 'orientations.txt'}},

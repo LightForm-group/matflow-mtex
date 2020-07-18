@@ -103,6 +103,28 @@ def estimate_ODF_from_CTF_file():
     return out
 
 
+@sources_mapper(task='estimate_ODF', method='from_CRC_file', script='estimate_ODF')
+def estimate_ODF_from_CRC_file():
+
+    script_name = 'estimate_ODF.m'
+    snippets = [
+        {
+            'name': 'get_ODF_from_CRC_file.m',
+            'req_args': ['CRC_file_path', 'specimenSym', 'phase'],
+        },
+        {
+            'name': 'export_ODF.m',
+        },
+    ]
+    out = {
+        'script': {
+            'content': get_wrapper_script(script_name, snippets),
+            'filename': script_name,
+        }
+    }
+    return out
+
+
 @sources_mapper(task='sample_texture', method='from_ODF', script='sample_texture')
 def sample_texture_from_ODF():
 
@@ -148,7 +170,8 @@ def write_ODF_file(path, ODF):
 @output_mapper(output_name='ODF', task='get_model_texture', method='fibre')
 @output_mapper(output_name='ODF', task='get_model_texture', method='random')
 @output_mapper(output_name='ODF', task='estimate_ODF', method='from_CTF_file')
-def parse_MTEX_ODF_file(path):
+@output_mapper(output_name='ODF', task='estimate_ODF', method='from_CRC_file')
+def parse_MTEX_ODF_file(path, orientations_coord_sys_path=None):
 
     crystal_sym = None
     specimen_sym = None
@@ -182,6 +205,10 @@ def parse_MTEX_ODF_file(path):
         'euler_angles': euler_angles,
         'weights': weights,
     }
+    if orientations_coord_sys_path:
+        ori_coord_sys = read_orientations_coordinate_system(orientations_coord_sys_path)
+        ODF.update({'orientations_coordinate_system': ori_coord_sys})
+
     return ODF
 
 
@@ -208,12 +235,15 @@ def parse_orientations(path):
 @cli_format_mapper(input_name='specimen_symmetry', task='get_model_texture', method='fibre')
 @cli_format_mapper(input_name='specimen_symmetry', task='get_model_texture', method='random')
 @cli_format_mapper(input_name='specimen_symmetry', task='estimate_ODF', method='from_CTF_file')
+@cli_format_mapper(input_name='specimen_symmetry', task='estimate_ODF', method='from_CRC_file')
 @cli_format_mapper(input_name='modal_orientation_hkl', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='modal_orientation_uvw', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='halfwidth', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='halfwidth', task='get_model_texture', method='fibre')
 @cli_format_mapper(input_name='CTF_file_path', task='estimate_ODF', method='from_CTF_file')
+@cli_format_mapper(input_name='CRC_file_path', task='estimate_ODF', method='from_CRC_file')
 @cli_format_mapper(input_name='phase', task='estimate_ODF', method='from_CTF_file')
+@cli_format_mapper(input_name='phase', task='estimate_ODF', method='from_CRC_file')
 def default_CLI_formatter(input_val):
 
     if isinstance(input_val, list):
