@@ -1,5 +1,6 @@
 '`matflow_mtex.main.py`'
 
+import json
 from pathlib import Path
 from textwrap import dedent
 
@@ -166,12 +167,22 @@ def write_ODF_file(path, ODF):
     np.savetxt(path, data, header=odf_header, fmt='%8.5f', comments='')
 
 
+@input_mapper(
+    input_file='orientation_coordinate_system.json',
+    task='sample_texture',
+    method='from_ODF',
+)
+def write_ori_coord_sys_from_ODF(path, ODF):
+    with Path(path).open('w') as handle:
+        json.dump(ODF['orientation_coordinate_system'], handle)
+
+
 @output_mapper(output_name='ODF', task='get_model_texture', method='unimodal')
 @output_mapper(output_name='ODF', task='get_model_texture', method='fibre')
 @output_mapper(output_name='ODF', task='get_model_texture', method='random')
 @output_mapper(output_name='ODF', task='estimate_ODF', method='from_CTF_file')
 @output_mapper(output_name='ODF', task='estimate_ODF', method='from_CRC_file')
-def parse_MTEX_ODF_file(path, orientations_coord_sys_path=None):
+def parse_MTEX_ODF_file(path, orientation_coordinate_system):
 
     crystal_sym = None
     specimen_sym = None
@@ -204,16 +215,14 @@ def parse_MTEX_ODF_file(path, orientations_coord_sys_path=None):
         'euler_angle_labels': euler_angle_labels,
         'euler_angles': euler_angles,
         'weights': weights,
+        'orientation_coordinate_system': orientation_coordinate_system,
     }
-    if orientations_coord_sys_path:
-        ori_coord_sys = read_orientations_coordinate_system(orientations_coord_sys_path)
-        ODF.update({'orientations_coordinate_system': ori_coord_sys})
 
     return ODF
 
 
 @output_mapper(output_name='orientations', task='sample_texture', method='from_ODF')
-def parse_orientations(path):
+def parse_orientations(path, ori_coord_sys_path):
 
     with Path(path).open() as handle:
         ln = handle.readline()
@@ -221,9 +230,13 @@ def parse_orientations(path):
 
     euler_angles = np.loadtxt(str(path), skiprows=1)
 
+    with Path(ori_coord_sys_path).open() as handle:
+        ori_coord_sys = json.load(handle)
+
     orientations = {
         'euler_angle_labels': euler_angle_labels,
         'euler_angles': euler_angles,
+        'orientation_coordinate_system': ori_coord_sys,
     }
     return orientations
 
