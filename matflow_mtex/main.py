@@ -205,7 +205,7 @@ def parse_MTEX_ODF_file(path, orientation_coordinate_system):
         if crystal_sym and specimen_sym and euler_angle_labels:
             break
 
-    data = np.loadtxt(str(path), skiprows=num_header)
+    data = np.loadtxt(str(path), skiprows=num_header, ndmin=2)
     euler_angles = data[:, 0:3]
     weights = data[:, 3]
 
@@ -228,7 +228,7 @@ def parse_orientations(path, ori_coord_sys_path):
         ln = handle.readline()
         euler_angle_labels = ln.split()
 
-    euler_angles = np.loadtxt(str(path), skiprows=1)
+    euler_angles = np.loadtxt(str(path), skiprows=1, ndmin=2)
 
     with Path(ori_coord_sys_path).open() as handle:
         ori_coord_sys = json.load(handle)
