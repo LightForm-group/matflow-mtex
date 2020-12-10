@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.1.4] - 2020.12.10
+
+### Fixed
+
+- Fix output mapper functions `parse_orientations` and `parse_MTEX_ODF_file` for cases where the files have only one row of data. Now we use the `ndmin=2` argument of `numpy.loadtxt` to ensure arrays of consistent dimensions are returned.
+
 ## [0.1.3] - 2020.08.18
 
 ### Added
