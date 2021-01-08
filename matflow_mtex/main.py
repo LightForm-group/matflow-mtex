@@ -1,6 +1,7 @@
 '`matflow_mtex.main.py`'
 
 import json
+import copy
 from pathlib import Path
 from textwrap import dedent
 
@@ -8,6 +9,7 @@ import numpy as np
 
 from matflow_mtex import sources_mapper, cli_format_mapper, input_mapper, output_mapper
 from matflow_mtex.scripting import get_wrapper_script
+from matflow_mtex.utils import to_camel_case
 
 
 @sources_mapper(task='get_model_texture', method='unimodal', script='write_unimodal_ODF')
@@ -150,6 +152,121 @@ def sample_texture_from_ODF():
     return out
 
 
+@sources_mapper(task='sample_texture', method='from_model_ODF', script='sample_texture')
+def sample_texture_from_model_ODF():
+
+    script_name = 'sample_texture.m'
+    snippets = [
+        {
+            'name': 'get_model_ODF.m',
+            'req_args': [
+                'ODFComponentDefnsJSONPath',
+                'crystalSym',
+                'specimenSym',
+            ],
+        },
+        {
+            'name': 'sample_ODF_orientations.m',
+            'req_args': ['numOrientations'],
+        },
+        {
+            'name': 'export_orientations_JSON.m',
+        },
+    ]
+    out = {
+        'script': {
+            'content': get_wrapper_script(script_name, snippets),
+            'filename': script_name,
+        }
+    }
+    return out
+
+
+@sources_mapper(task='sample_texture', method='from_CTF_file', script='sample_texture')
+def sample_texture_from_CTF_file():
+
+    script_name = 'sample_texture.m'
+    snippets = [
+        {
+            'name': 'get_ODF_from_CTF_file.m',
+            'req_args': [
+                'CTF_file_path',
+                'referenceFrameTransformation',
+                'specimenSym',
+                'phase',
+            ],
+        },
+        {
+            'name': 'sample_ODF_orientations.m',
+            'req_args': ['numOrientations'],
+        },
+        {
+            'name': 'export_orientations_JSON.m',
+        },
+    ]
+    out = {
+        'script': {
+            'content': get_wrapper_script(script_name, snippets),
+            'filename': script_name,
+        }
+    }
+    return out
+
+
+@sources_mapper(task='sample_texture', method='from_CRC_file', script='sample_texture')
+def sample_texture_from_CRC_file():
+
+    script_name = 'sample_texture.m'
+    snippets = [
+        {
+            'name': 'get_ODF_from_CRC_file.m',
+            'req_args': [
+                'CRC_file_path',
+                'referenceFrameTransformation',
+                'specimenSym',
+                'phase',
+            ],
+        },
+        {
+            'name': 'sample_ODF_orientations.m',
+            'req_args': ['numOrientations'],
+        },
+        {
+            'name': 'export_orientations_JSON.m',
+        },
+    ]
+    out = {
+        'script': {
+            'content': get_wrapper_script(script_name, snippets),
+            'filename': script_name,
+        }
+    }
+    return out
+
+
+@sources_mapper(task='visualise_orientations', method='pole_figure', script='visualise_orientations')
+def plot_pole_figure():
+
+    script_name = 'visualise_orientations.m'
+    snippets = [
+        {
+            'name': 'plot_pole_figure.m',
+            'req_args': [
+                'orientationsPath',
+                'crystalSym',
+                'poleFigureDirections',
+            ],
+        },
+    ]
+    out = {
+        'script': {
+            'content': get_wrapper_script(script_name, snippets),
+            'filename': script_name,
+        }
+    }
+    return out
+
+
 @input_mapper(input_file='ODF.txt', task='sample_texture', method='from_ODF')
 def write_ODF_file(path, ODF):
     'Write out ODF into an "MTEX" text file'
@@ -175,6 +292,38 @@ def write_ODF_file(path, ODF):
 def write_ori_coord_sys_from_ODF(path, ODF):
     with Path(path).open('w') as handle:
         json.dump(ODF['orientation_coordinate_system'], handle)
+
+
+@input_mapper(
+    input_file='orientations.json',
+    task='visualise_orientations',
+    method='pole_figure',
+)
+def write_orientations(path, orientations):
+    with Path(path).open('w') as handle:
+        if 'euler_angles' in orientations:
+            orientations['euler_angles'] = orientations['euler_angles'].tolist()
+        if 'quaternions' in orientations:
+            orientations['quaternions'] = orientations['quaternions'].tolist()
+        json.dump(orientations, handle, indent=4)
+
+
+@input_mapper(
+    input_file='ODF_components.json',
+    task='sample_texture',
+    method='from_model_ODF',
+)
+def write_model_ODF_components(path, ODF_components):
+    ODF_components = copy.deepcopy(ODF_components)
+    for idx, ODF_comp in enumerate(ODF_components):
+        for key in list(ODF_comp.keys()):
+            ODF_components[idx][to_camel_case(key)] = ODF_comp.pop(key)
+        # This hack adds a unique key to each ODF component definition, thus helping
+        # to ensure that MATLAB's `jsondecode` loads into a cell array of structures
+        # instead of a structure array:
+        ODF_components[idx][f'index_{idx}'] = True
+    with Path(path).open('w') as handle:
+        json.dump(ODF_components, handle, indent=4)
 
 
 @output_mapper(output_name='ODF', task='get_model_texture', method='unimodal')
@@ -241,25 +390,82 @@ def parse_orientations(path, ori_coord_sys_path):
     return orientations
 
 
+@output_mapper(output_name='orientations', task='sample_texture', method='from_model_ODF')
+@output_mapper(output_name='orientations', task='sample_texture', method='from_CTF_file')
+@output_mapper(output_name='orientations', task='sample_texture', method='from_CRC_file')
+def parse_orientations_JSON(path, orientation_coordinate_system):
+
+    with Path(path).open() as handle:
+        orientations = json.load(handle)
+
+    if 'euler_angles' in orientations:
+        orientations['euler_angles'] = np.array(orientations['euler_angles'])
+    if 'quaternions' in orientations:
+        orientations['quaternions'] = np.array(orientations['quaternions'])
+
+    if orientation_coordinate_system:
+        orientations.update({
+            'orientation_coordinate_system': orientation_coordinate_system,
+        })
+
+    return orientations
+
+
 @cli_format_mapper(input_name='crystal_symmetry', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='crystal_symmetry', task='get_model_texture', method='fibre')
 @cli_format_mapper(input_name='crystal_symmetry', task='get_model_texture', method='random')
+@cli_format_mapper(input_name='crystal_symmetry', task='sample_texture', method='from_model_ODF')
 @cli_format_mapper(input_name='specimen_symmetry', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='specimen_symmetry', task='get_model_texture', method='fibre')
 @cli_format_mapper(input_name='specimen_symmetry', task='get_model_texture', method='random')
 @cli_format_mapper(input_name='specimen_symmetry', task='estimate_ODF', method='from_CTF_file')
 @cli_format_mapper(input_name='specimen_symmetry', task='estimate_ODF', method='from_CRC_file')
+@cli_format_mapper(input_name='specimen_symmetry', task='sample_texture', method='from_model_ODF')
+@cli_format_mapper(input_name='specimen_symmetry', task='sample_texture', method='from_CTF_file')
+@cli_format_mapper(input_name='specimen_symmetry', task='sample_texture', method='from_CRC_file')
 @cli_format_mapper(input_name='modal_orientation_hkl', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='modal_orientation_uvw', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='halfwidth', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='halfwidth', task='get_model_texture', method='fibre')
 @cli_format_mapper(input_name='CTF_file_path', task='estimate_ODF', method='from_CTF_file')
 @cli_format_mapper(input_name='CRC_file_path', task='estimate_ODF', method='from_CRC_file')
+@cli_format_mapper(input_name='CTF_file_path', task='sample_texture', method='from_CTF_file')
+@cli_format_mapper(input_name='CRC_file_path', task='sample_texture', method='from_CRC_file')
 @cli_format_mapper(input_name='phase', task='estimate_ODF', method='from_CTF_file')
 @cli_format_mapper(input_name='phase', task='estimate_ODF', method='from_CRC_file')
+@cli_format_mapper(input_name='phase', task='sample_texture', method='from_CTF_file')
+@cli_format_mapper(input_name='phase', task='sample_texture', method='from_CRC_file')
 def default_CLI_formatter(input_val):
 
     if isinstance(input_val, list):
         input_val = '[' + ' '.join([f'{i}' for i in input_val]) + ']'
 
     return f'"{input_val}"'
+
+
+@cli_format_mapper(input_name='reference_frame_transformation', task='sample_texture', method='from_CTF_file')
+@cli_format_mapper(input_name='reference_frame_transformation', task='sample_texture', method='from_CRC_file')
+def reference_frame_formatter(ref_frame):
+    if ref_frame == 'euler_to_spatial':
+        return '"convertEuler2SpatialReferenceFrame"'
+    elif ref_frame == 'spatial_to_euler':
+        return '"convertSpatial2EulerReferenceFrame"'
+    else:
+        return '""'
+
+
+@cli_format_mapper(
+    input_name='pole_figure_directions',
+    task='visualise_orientations',
+    method='pole_figure',
+)
+def multiple_miller_indices_formatter(miller_directions):
+
+    out = (
+        '"{' +
+        ' '.join(['{' + ' '.join([str(i) for i in miller_dir]) + '}'
+                  for miller_dir in miller_directions]) +
+        '}"'
+    )
+
+    return out

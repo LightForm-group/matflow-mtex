@@ -11,6 +11,7 @@ SNIPPETS_ARG_TYPES = {
             'halfwidth': 'double',
         },
     },
+    'get_model_ODF.m': {},
     'get_fibre_ODF.m': {
         'ensure_types': {
             'halfwidth': 'double',
@@ -23,6 +24,12 @@ SNIPPETS_ARG_TYPES = {
     'sample_ODF_orientations.m': {'ensure_types': {'numOrientations': 'double'}},
     'load_ODF.m': {'defaults': {'ODF_path': 'ODF.txt'}},
     'export_orientations.m': {'defaults': {'fileName': 'orientations.txt'}},
+    'export_orientations_JSON.m': {'defaults': {'fileName': 'orientations.json'}},
+    'plot_pole_figure.m': {
+        'ensure_types': {
+            'poleFigureDirections': '2D_cell_array',
+        }
+    },
 }
 
 

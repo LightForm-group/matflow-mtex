@@ -1,0 +1,115 @@
+function exitcode = plot_pole_figure(orientationsPath, crystalSym, poleFigureDirections)
+    
+    ori_data = jsondecode(fileread(orientationsPath));
+    
+    alignment = {};
+    if isfield(ori_data.unit_cell_alignment, 'x')
+        alignment{end + 1} = sprintf('X||%s', ori_data.unit_cell_alignment.x);
+    end
+    if isfield(ori_data.unit_cell_alignment, 'y')
+        alignment{end + 1} = sprintf('Y||%s', ori_data.unit_cell_alignment.y);
+    end    
+    if isfield(ori_data.unit_cell_alignment, 'z')
+        alignment{end + 1} = sprintf('Z||%s', ori_data.unit_cell_alignment.z);
+    end    
+   
+    crystalSym = crystalSymmetry(crystalSym, alignment{:});
+    millerDirs = Miller(poleFigureDirections{1}, crystalSym);
+        
+    for i = 2:length(poleFigureDirections)
+        newMillerDir = Miller(poleFigureDirections{i}, crystalSym);
+        millerDirs = [millerDirs, newMillerDir];
+    end    
+
+    if strcmp(ori_data.type, 'quat')
+        quats = quaternion(ori_data.quaternions.');
+        orientations = orientation(quats, crystalSym);
+        
+    elseif strcmp(ori_data.type, 'euler')
+        orientations = orientation.byEuler(...
+            ori_data.euler_angles * degree,...
+            crystalSym...
+        );
+        
+    end
+    
+    newMtexFigure('layout', [1, 1], 'visible', 'off');
+    plotx2east;
+    plotPDF(orientations, millerDirs);    
+    
+    aAxis = Miller(crystalSym.aAxis, 'xyz');
+    bAxis = Miller(crystalSym.bAxis, 'xyz');
+    cAxis = Miller(crystalSym.cAxis, 'xyz');
+    
+    xyzVecs = eye(3);
+    xyzLabels = {'x', 'y', 'z'};
+    aLabelAdded = 0;
+    bLabelAdded = 0;
+    cLabelAdded = 0;
+    for i = 1:3
+        if round(aAxis.xyz, 10) == xyzVecs(i, :)
+            aLabelAdded = 1;
+            xyzLabels(i) = append(xyzLabels(i), '/a');
+        end
+        if round(bAxis.xyz, 10) == xyzVecs(i, :)
+            bLabelAdded = 1;
+            xyzLabels(i) = append(xyzLabels(i), '/b');
+        end
+        if round(cAxis.xyz, 10) == xyzVecs(i, :)
+            cLabelAdded = 1;
+            xyzLabels(i) = append(xyzLabels(i), '/c');
+        end         
+    end
+    
+    if isfield(ori_data, 'orientation_coordinate_system')
+        if isstruct(ori_data.orientation_coordinate_system)
+            if isfield(ori_data.orientation_coordinate_system, 'x')
+                xyzLabels(1) = append(...
+                    xyzLabels(1),...
+                    sprintf('/%s', ori_data.orientation_coordinate_system.x)...
+                );
+            end
+            if isfield(ori_data.orientation_coordinate_system, 'y')
+                xyzLabels(2) = append(...
+                    xyzLabels(2),...
+                    sprintf('/%s', ori_data.orientation_coordinate_system.y)...
+                );
+            end
+            if isfield(ori_data.orientation_coordinate_system, 'z')
+                xyzLabels(3) = append(...
+                    xyzLabels(3),...
+                    sprintf('/%s', ori_data.orientation_coordinate_system.z)...
+                );
+            end            
+            annotate(...
+                [xvector, yvector, zvector],...
+                'label', {...
+                    ori_data.orientation_coordinate_system.x,...
+                    ori_data.orientation_coordinate_system.y,...
+                    ori_data.orientation_coordinate_system.z...
+                },...
+                'backgroundcolor', 'w'...
+            )            
+        end
+    end    
+    
+    annotate(...
+        [xvector, yvector, zvector],...
+        'label', {xyzLabels{1}, xyzLabels{2}, xyzLabels{3}},...
+        'backgroundcolor', 'w'...
+    )
+
+    if ~aLabelAdded
+        annotate([crystalSym.aAxis], 'label', {'a'}, 'backgroundcolor', 'w');
+    end
+    if ~bLabelAdded
+        annotate([crystalSym.bAxis], 'label', {'b'}, 'backgroundcolor', 'w');
+    end    
+    if ~cLabelAdded
+        annotate([crystalSym.cAxis], 'label', {'c'}, 'backgroundcolor', 'w');
+    end
+        
+    saveFigure('pole_figure.png');
+
+    exitcode = 1;
+end
