@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.1.5] - 2021.01.10
+
+### Added
+
+- Add new tasks for generating orientations that bypass exporting/importing ODFs due to issues with how [MTEX currently handles this](https://github.com/mtex-toolbox/mtex/issues/659). These tasks are: `sample_texture` with methods: `from_model_ODF`, `from_CTF_file` and `from_CRC_file`. Previously, this would have been achieved with two tasks `get_model_texture`/`estimate_ODF` and then `sample_texture`.
+- Add ability to generate an ODF in `sample_texture/from_model_ODF` task using multiple ODF components.
+- Add `visualise_orientations/pole_figure` task to plot sampled orientations on a pole figure in MTEX.
+
 ## [0.1.4] - 2020.12.10
 
 ### Fixed
