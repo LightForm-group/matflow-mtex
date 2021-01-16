@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.1.6] - xxxx.xx.xx
+
+### Fixed
+
+- Account for `euler_degree` boolean specification in orientations JSON file.
+
 ## [0.1.5] - 2021.01.10
 
 ### Added
