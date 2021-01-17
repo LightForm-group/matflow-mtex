@@ -22,8 +22,14 @@ function exitcode = plot_pole_figure(orientationsPath, crystalSym, poleFigureDir
     end    
 
     if strcmp(ori_data.type, 'quat')
-        % TODO: check how to correctly encode the "P" constant here?
-        quats = quaternion(ori_data.quaternions.');
+        
+        quat_data = ori_data.quaternions;
+        if ori_data.P == 1
+            % Scale vector part by -1:
+            quat_data(:, 2:end) = quat_data(:, 2:end) * -1;
+        end
+
+        quats = quaternion(quat_data.');
         orientations = orientation(quats, crystalSym);
         
     elseif strcmp(ori_data.type, 'euler')
