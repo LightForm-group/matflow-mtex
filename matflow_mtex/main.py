@@ -302,9 +302,9 @@ def write_ori_coord_sys_from_ODF(path, ODF):
 def write_orientations(path, orientations):
     with Path(path).open('w') as handle:
         if 'euler_angles' in orientations:
-            orientations['euler_angles'] = orientations['euler_angles'].tolist()
+            orientations['euler_angles'] = np.array(orientations['euler_angles']).tolist()
         if 'quaternions' in orientations:
-            orientations['quaternions'] = orientations['quaternions'].tolist()
+            orientations['quaternions'] = np.array(orientations['quaternions']).tolist()
         json.dump(orientations, handle, indent=4)
 
 
