@@ -245,6 +245,7 @@ def sample_texture_from_CRC_file():
 
 
 @sources_mapper(task='visualise_orientations', method='pole_figure', script='visualise_orientations')
+@sources_mapper(task='visualise_volume_element_response', method='texture_pole_figure', script='visualise_orientations')
 def plot_pole_figure():
 
     script_name = 'visualise_orientations.m'
@@ -305,6 +306,19 @@ def write_orientations(path, orientations):
             orientations['euler_angles'] = np.array(orientations['euler_angles']).tolist()
         if 'quaternions' in orientations:
             orientations['quaternions'] = np.array(orientations['quaternions']).tolist()
+        json.dump(orientations, handle, indent=4)
+
+
+@input_mapper(
+    input_file='orientations.json',
+    task='visualise_volume_element_response',
+    method='texture_pole_figure',
+)
+def write_orientations_from_VE_response(path, volume_element_response, increment):
+    with Path(path).open('w') as handle:
+        orientations = copy.deepcopy(volume_element_response['orientations']['data'])
+
+        orientations['quaternions'] = orientations['quaternions'][increment].tolist()
         json.dump(orientations, handle, indent=4)
 
 
@@ -454,11 +468,8 @@ def reference_frame_formatter(ref_frame):
         return '""'
 
 
-@cli_format_mapper(
-    input_name='pole_figure_directions',
-    task='visualise_orientations',
-    method='pole_figure',
-)
+@cli_format_mapper(input_name='pole_figure_directions', task='visualise_orientations', method='pole_figure')
+@cli_format_mapper(input_name='pole_figure_directions', task='visualise_volume_element_response', method='texture_pole_figure')
 def multiple_miller_indices_formatter(miller_directions):
 
     out = (
