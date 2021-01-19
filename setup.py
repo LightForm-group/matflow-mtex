@@ -37,7 +37,7 @@ def get_changelog():
 
 
 setup(
-    author="Adam J. Plowman, Elliot Cooksey-Nash",
+    author="Adam J. Plowman, Elliot Cooksey-Nash, Michael D. Atkinson",
     author_email='adam.plowman@manchester.ac.uk',
     python_requires='>=3.6',
     classifiers=[
