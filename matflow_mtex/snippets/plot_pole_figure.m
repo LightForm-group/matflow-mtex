@@ -26,6 +26,9 @@ function exitcode = plot_pole_figure(orientationsPath, crystalSym, poleFigureDir
         quat_data = ori_data.quaternions;
         if ori_data.P == 1
             % Scale vector part by -1:
+            % This works "accidentally" - the requirement for inverting is due to
+            % MTEX adopting a crystal->specimen convention rather than specimen->crystal
+            % needs fixing!
             quat_data(:, 2:end) = quat_data(:, 2:end) * -1;
         end
 
