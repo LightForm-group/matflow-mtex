@@ -34,6 +34,36 @@ function ODF = get_model_ODF(ODFComponentDefnsJSONPath, crystalSym, specimenSym)
         elseif strcmp(ODFComponentsDefns{i}.type, 'uniform')
             ODFComponent = uniformODF(crystalSym, specimenSym);
             
+        elseif strcmp(ODFComponentsDefns{i}.type, 'fibre')        
+            kernel = deLaValleePoussinKernel(...
+                'halfwidth',...
+                comp.halfwidth*degree...
+            );
+            if strcmp(ODFComponentsDefns{i}.mtexfibre, 'alpha')
+                ODFComponent = fibreODF(fibre.alpha(crystalSym,specimenSym),kernel);
+                
+            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'beta')
+                ODFComponent = fibreODF(fibre.beta(crystalSym,specimenSym),kernel);
+                
+            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'epsilon')
+                ODFComponent = fibreODF(fibre.epsilon(crystalSym,specimenSym),kernel); 
+                
+            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'eta')
+                ODFComponent = fibreODF(fibre.eta(crystalSym,specimenSym),kernel);
+                
+            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'fit')
+                ODFComponent = fibreODF(fibre.fit(crystalSym,specimenSym),kernel);
+                
+            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'gamma')
+                ODFComponent = fibreODF(fibre.gamma(crystalSym,specimenSym),kernel);
+                
+            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'rand')
+                ODFComponent = fibreODF(fibre.rand(crystalSym,specimenSym),kernel); 
+                
+            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'tau')
+                ODFComponent = fibreODF(fibre.tau(crystalSym,specimenSym),kernel); 
+            end
+            
         end
                        
         if i == 1
