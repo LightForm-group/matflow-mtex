@@ -35,7 +35,8 @@ function exitcode = plot_pole_figure(orientationsPath, crystalSym, poleFigureDir
     
     newMtexFigure('layout', [1, 1], 'visible', 'off');
     plotx2east;
-    plotPDF(orientations, millerDirs);    
+    plotPDF(orientations, millerDirs,'contourf');
+    mtexColorbar;
     
     aAxis = Miller(crystalSym.aAxis, 'xyz');
     bAxis = Miller(crystalSym.bAxis, 'xyz');
