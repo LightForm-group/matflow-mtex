@@ -22,14 +22,31 @@ function exitcode = plot_pole_figure(orientationsPath, crystalSym, poleFigureDir
     end    
 
     if strcmp(ori_data.type, 'quat')
-        quats = quaternion(ori_data.quaternions.');
+        
+        quat_data = ori_data.quaternions;
+        if ori_data.P == 1
+            % Scale vector part by -1:
+            % This works "accidentally" - the requirement for inverting is due to
+            % MTEX adopting a crystal->specimen convention rather than specimen->crystal
+            % needs fixing!
+            quat_data(:, 2:end) = quat_data(:, 2:end) * -1;
+        end
+
+        quats = quaternion(quat_data.');
         orientations = orientation(quats, crystalSym);
         
     elseif strcmp(ori_data.type, 'euler')
-        orientations = orientation.byEuler(...
-            ori_data.euler_angles * degree,...
-            crystalSym...
-        );
+        if ori_data.euler_degrees
+            orientations = orientation.byEuler(...
+                ori_data.euler_angles * degree,...
+                crystalSym...
+            );
+        else
+            orientations = orientation.byEuler(...
+                ori_data.euler_angles,...
+                crystalSym...
+            );            
+        end
         
     end
     

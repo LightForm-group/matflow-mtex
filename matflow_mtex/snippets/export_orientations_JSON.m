@@ -8,6 +8,7 @@ function exitcode = export_orientations_JSON(orientations, fileName)
         orientations.Phi,...
         orientations.phi2...
     ] / degree;
+    oris_dat.euler_degrees = 'True';
 
     jsonStr = jsonencode(oris_dat);
     

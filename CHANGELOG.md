@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.1.6] - xxxx.xx.xx
+
+### Changed
+
+- Account for `euler_degree` boolean specification in orientations JSON file.
+- Scale vector part of quaternions in `plot_pole_figure` snippet by -1 if P-constant is +1.
+
 ## [0.1.5] - 2021.01.10
 
 ### Added
