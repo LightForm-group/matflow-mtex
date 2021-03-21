@@ -194,6 +194,7 @@ def sample_texture_from_CTF_file():
                 'referenceFrameTransformation',
                 'specimenSym',
                 'phase',
+                'rotationJSONPath',
             ],
         },
         {
@@ -225,6 +226,7 @@ def sample_texture_from_CRC_file():
                 'referenceFrameTransformation',
                 'specimenSym',
                 'phase',
+                'rotationJSONPath',
             ],
         },
         {
@@ -338,6 +340,14 @@ def write_model_ODF_components(path, ODF_components):
         ODF_components[idx][f'index_{idx}'] = True
     with Path(path).open('w') as handle:
         json.dump(ODF_components, handle, indent=4)
+
+
+@input_mapper(input_file='rotation.json', task='sample_texture', method='from_CTF_file')
+@input_mapper(input_file='rotation.json', task='sample_texture', method='from_CRC_file')
+def write_sample_texture_rotation(path, rotation):
+    rotation = copy.deepcopy(rotation)
+    with Path(path).open('w') as handle:
+        json.dump(rotation, handle, indent=4)
 
 
 @output_mapper(output_name='ODF', task='get_model_texture', method='unimodal')
