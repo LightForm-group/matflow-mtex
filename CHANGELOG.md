@@ -5,6 +5,7 @@
 ### Changed
 
 - Add option to rotate EBSD data in snippets `get_ODF_from_CRC_file` and `get_ODF_from_CTF_file`.
+
 ## [0.1.6] - 2021.01.19
 
 ### Added
