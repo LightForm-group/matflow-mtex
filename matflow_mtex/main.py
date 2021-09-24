@@ -6,6 +6,7 @@ from pathlib import Path
 from textwrap import dedent
 
 import numpy as np
+from damask_parse.utils import validate_orientations
 
 from matflow_mtex import sources_mapper, cli_format_mapper, input_mapper, output_mapper
 from matflow_mtex.scripting import get_wrapper_script
@@ -303,6 +304,7 @@ def write_ori_coord_sys_from_ODF(path, ODF):
     method='pole_figure',
 )
 def write_orientations(path, orientations):
+    orientations = validate_orientations(orientations)
     with Path(path).open('w') as handle:
         if 'euler_angles' in orientations:
             orientations['euler_angles'] = np.array(orientations['euler_angles']).tolist()

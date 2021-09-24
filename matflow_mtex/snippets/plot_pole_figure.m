@@ -1,7 +1,7 @@
 function exitcode = plot_pole_figure(orientationsPath, crystalSym, poleFigureDirections)
     
     ori_data = jsondecode(fileread(orientationsPath));
-    
+
     alignment = {};
     if isfield(ori_data.unit_cell_alignment, 'x')
         alignment{end + 1} = sprintf('X||%s', ori_data.unit_cell_alignment.x);
@@ -32,6 +32,11 @@ function exitcode = plot_pole_figure(orientationsPath, crystalSym, poleFigureDir
             quat_data(:, 2:end) = quat_data(:, 2:end) * -1;
         end
 
+        if strcmp(ori_data.quat_component_ordering, 'vector-scalar')
+            % Swap to scalar-vector order:
+            quat_data = circshift(quat_data, 1, 2)
+        end
+        
         quats = quaternion(quat_data.');
         orientations = orientation(quats, crystalSym);
         

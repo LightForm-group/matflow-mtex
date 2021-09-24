@@ -60,6 +60,7 @@ setup(
     install_requires=[
         'matflow',
         'numpy',
+        'damask-parse', # temporary; for `validate_orientations`
     ],
     license="MIT license",
     long_description=get_long_description() + '\n\n' + get_changelog(),

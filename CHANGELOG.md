@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.1.8] - 2021.09.24
+
+### Changed
+
+- Validate orientations in `visualise_orientations/pole_figure`.
+- Respect `quat_component_ordering` in `plot_pole_figure`
+
 ## [0.1.7] - 2021.03.21
 
 ### Changed
