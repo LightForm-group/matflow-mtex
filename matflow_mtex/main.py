@@ -189,14 +189,17 @@ def sample_texture_from_CTF_file():
     script_name = 'sample_texture.m'
     snippets = [
         {
-            'name': 'get_ODF_from_CTF_file.m',
+            'name': 'get_EBSD_orientations_from_CTF_file.m',
             'req_args': [
                 'CTF_file_path',
                 'referenceFrameTransformation',
-                'specimenSym',
                 'phase',
                 'rotationJSONPath',
             ],
+        },
+        {
+            'name': 'get_ODF_from_EBSD_orientations',
+            'req_args':['specimenSym'],
         },
         {
             'name': 'sample_ODF_orientations.m',
@@ -221,14 +224,17 @@ def sample_texture_from_CRC_file():
     script_name = 'sample_texture.m'
     snippets = [
         {
-            'name': 'get_ODF_from_CRC_file.m',
+            'name': 'get_EBSD_orientations_from_CRC_file.m',
             'req_args': [
                 'CRC_file_path',
                 'referenceFrameTransformation',
-                'specimenSym',
                 'phase',
                 'rotationJSONPath',
             ],
+        },
+        {
+            'name': 'get_ODF_from_EBSD_orientations',
+            'req_args':['specimenSym'],
         },
         {
             'name': 'sample_ODF_orientations.m',

@@ -1,5 +1,5 @@
-function ODF = get_ODF_from_CRC_file(CRC_file_path, referenceFrameTransformation, specimenSym, phase, rotationJSONPath)
-    
+function EBSD_orientations = get_EBSD_orientations_from_CRC_file(CRC_file_path, referenceFrameTransformation, phase, rotationJSONPath)
+
     if isempty(referenceFrameTransformation)
         referenceFrameTransformation = {};
     else
@@ -7,12 +7,14 @@ function ODF = get_ODF_from_CRC_file(CRC_file_path, referenceFrameTransformation
     end
 
     ebsd = loadEBSD_crc(CRC_file_path, referenceFrameTransformation{:});
-    
+
     rotationJSON = jsondecode(fileread(rotationJSONPath));
+
     if ~isempty(rotationJSON)
         % Note that using rotate appears to remove the non-indexed phase.
         rotationEulersRad = num2cell(rotationJSON.euler_angles_deg * degree);
         rot = rotation('euler', rotationEulersRad{:});
+
         if isfield(rotationJSON, 'keep_XY')
             ebsd = rotate(ebsd, rot, 'keepXY');
         elseif isfield(rotationJSON, 'keep_euler')
@@ -20,9 +22,8 @@ function ODF = get_ODF_from_CRC_file(CRC_file_path, referenceFrameTransformation
         else
             ebsd = rotate(ebsd, rot);
         end
+
     end
 
-    ori = ebsd(phase).orientations;
-    ori.SS = specimenSymmetry(specimenSym);
-    ODF = calcDensity(ori);
+    EBSD_orientations = ebsd(phase).orientations;
 end
