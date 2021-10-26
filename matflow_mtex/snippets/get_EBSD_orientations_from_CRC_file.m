@@ -1,4 +1,4 @@
-function EBSD_orientations = get_EBSD_orientations_from_CRC_file(CRC_file_path, referenceFrameTransformation, phase, specimenSym, rotationJSONPath)
+function EBSD_orientations = get_EBSD_orientations_from_CRC_file(CRC_file_path, referenceFrameTransformation, specimenSym, phase, rotationJSONPath)
 
     if isempty(referenceFrameTransformation)
         referenceFrameTransformation = {};

@@ -193,8 +193,8 @@ def sample_texture_from_CTF_file():
             'req_args': [
                 'CTF_file_path',
                 'referenceFrameTransformation',
-                'phase',
                 'specimenSym',
+                'phase',
                 'rotationJSONPath',
             ],
         },
@@ -228,8 +228,8 @@ def sample_texture_from_CRC_file():
             'req_args': [
                 'CRC_file_path',
                 'referenceFrameTransformation',
-                'phase',
                 'specimenSym',
+                'phase',
                 'rotationJSONPath',
             ],
         },
@@ -262,8 +262,8 @@ def sample_orientations_from_CTF_file():
             'req_args': [
                 'CTF_file_path',
                 'referenceFrameTransformation',
-                'phase',
                 'specimenSym',
+                'phase',
                 'rotationJSONPath',
             ],
         },
@@ -293,8 +293,8 @@ def sample_orientations_from_CRC_file():
             'req_args': [
                 'CRC_file_path',
                 'referenceFrameTransformation',
-                'phase',
                 'specimenSym',
+                'phase',
                 'rotationJSONPath',
             ],
         },
