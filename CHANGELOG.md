@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.1.9] - 2021.xx.xx
+
+### Added
+
+- Add task `sample_orientations` with methods `from_CTF_file` and `from_CRC_file`. This is for randomly sampling `N` orientations directly from the EBSD data. Similar to the `sample_texture` task, but an ODF is not constructed.
 ## [0.1.8] - 2021.09.24
 
 ### Changed
