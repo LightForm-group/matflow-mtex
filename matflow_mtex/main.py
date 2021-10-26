@@ -252,6 +252,65 @@ def sample_texture_from_CRC_file():
     }
     return out
 
+@sources_mapper(task='sample_orientations', method='from_CTF_file', script='sample_orientations')
+def sample_orientations_from_CTF_file():
+
+    script_name = 'sample_orientations.m'
+    snippets = [
+        {
+            'name': 'get_EBSD_orientations_from_CTF_file.m',
+            'req_args': [
+                'CTF_file_path',
+                'referenceFrameTransformation',
+                'phase',
+                'rotationJSONPath',
+            ],
+        },
+        {
+            'name': 'randomly_sample_EBSD_orientations.m',
+            'req_args': ['numOrientations'],
+        },
+        {
+            'name': 'export_orientations_JSON.m',
+        },
+    ]
+    out = {
+        'script': {
+            'content': get_wrapper_script(script_name, snippets),
+            'filename': script_name,
+        }
+    }
+    return out
+
+@sources_mapper(task='sample_orientations', method='from_CRC_file', script='sample_orientations')
+def sample_orientations_from_CRC_file():
+
+    script_name = 'sample_orientations.m'
+    snippets = [
+        {
+            'name': 'get_EBSD_orientations_from_CRC_file.m',
+            'req_args': [
+                'CRC_file_path',
+                'referenceFrameTransformation',
+                'phase',
+                'rotationJSONPath',
+            ],
+        },
+        {
+            'name': 'randomly_sample_EBSD_orientations.m',
+            'req_args': ['numOrientations'],
+        },
+        {
+            'name': 'export_orientations_JSON.m',
+        },
+    ]
+    out = {
+        'script': {
+            'content': get_wrapper_script(script_name, snippets),
+            'filename': script_name,
+        }
+    }
+    return out
 
 @sources_mapper(task='visualise_orientations', method='pole_figure', script='visualise_orientations')
 @sources_mapper(task='visualise_volume_element_response', method='texture_pole_figure', script='visualise_orientations')
@@ -352,6 +411,8 @@ def write_model_ODF_components(path, ODF_components):
 
 @input_mapper(input_file='rotation.json', task='sample_texture', method='from_CTF_file')
 @input_mapper(input_file='rotation.json', task='sample_texture', method='from_CRC_file')
+@input_mapper(input_file='rotation.json', task='sample_orientations', method='from_CTF_file')
+@input_mapper(input_file='rotation.json', task='sample_orientations', method='from_CRC_file')
 def write_sample_texture_rotation(path, rotation):
     rotation = copy.deepcopy(rotation)
     with Path(path).open('w') as handle:
@@ -425,6 +486,8 @@ def parse_orientations(path, ori_coord_sys_path):
 @output_mapper(output_name='orientations', task='sample_texture', method='from_model_ODF')
 @output_mapper(output_name='orientations', task='sample_texture', method='from_CTF_file')
 @output_mapper(output_name='orientations', task='sample_texture', method='from_CRC_file')
+@output_mapper(output_name='orientations', task='sample_orientations', method='from_CTF_file')
+@output_mapper(output_name='orientations', task='sample_orientations', method='from_CRC_file')
 def parse_orientations_JSON(path, orientation_coordinate_system):
 
     with Path(path).open() as handle:
@@ -455,6 +518,8 @@ def parse_orientations_JSON(path, orientation_coordinate_system):
 @cli_format_mapper(input_name='specimen_symmetry', task='sample_texture', method='from_model_ODF')
 @cli_format_mapper(input_name='specimen_symmetry', task='sample_texture', method='from_CTF_file')
 @cli_format_mapper(input_name='specimen_symmetry', task='sample_texture', method='from_CRC_file')
+@cli_format_mapper(input_name='specimen_symmetry', task='sample_orientations', method='from_CTF_file')
+@cli_format_mapper(input_name='specimen_symmetry', task='sample_orientations', method='from_CRC_file')
 @cli_format_mapper(input_name='modal_orientation_hkl', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='modal_orientation_uvw', task='get_model_texture', method='unimodal')
 @cli_format_mapper(input_name='halfwidth', task='get_model_texture', method='unimodal')
@@ -463,10 +528,14 @@ def parse_orientations_JSON(path, orientation_coordinate_system):
 @cli_format_mapper(input_name='CRC_file_path', task='estimate_ODF', method='from_CRC_file')
 @cli_format_mapper(input_name='CTF_file_path', task='sample_texture', method='from_CTF_file')
 @cli_format_mapper(input_name='CRC_file_path', task='sample_texture', method='from_CRC_file')
+@cli_format_mapper(input_name='CTF_file_path', task='sample_orientations', method='from_CTF_file')
+@cli_format_mapper(input_name='CRC_file_path', task='sample_orientations', method='from_CRC_file')
 @cli_format_mapper(input_name='phase', task='estimate_ODF', method='from_CTF_file')
 @cli_format_mapper(input_name='phase', task='estimate_ODF', method='from_CRC_file')
 @cli_format_mapper(input_name='phase', task='sample_texture', method='from_CTF_file')
 @cli_format_mapper(input_name='phase', task='sample_texture', method='from_CRC_file')
+@cli_format_mapper(input_name='phase', task='sample_orientations', method='from_CTF_file')
+@cli_format_mapper(input_name='phase', task='sample_orientations', method='from_CRC_file')
 def default_CLI_formatter(input_val):
 
     if isinstance(input_val, list):
@@ -477,6 +546,8 @@ def default_CLI_formatter(input_val):
 
 @cli_format_mapper(input_name='reference_frame_transformation', task='sample_texture', method='from_CTF_file')
 @cli_format_mapper(input_name='reference_frame_transformation', task='sample_texture', method='from_CRC_file')
+@cli_format_mapper(input_name='reference_frame_transformation', task='sample_orientations', method='from_CTF_file')
+@cli_format_mapper(input_name='reference_frame_transformation', task='sample_orientations', method='from_CRC_file')
 def reference_frame_formatter(ref_frame):
     if ref_frame == 'euler_to_spatial':
         return '"convertEuler2SpatialReferenceFrame"'
