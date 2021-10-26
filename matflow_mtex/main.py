@@ -194,12 +194,12 @@ def sample_texture_from_CTF_file():
                 'CTF_file_path',
                 'referenceFrameTransformation',
                 'phase',
+                'specimenSym',
                 'rotationJSONPath',
             ],
         },
         {
             'name': 'get_ODF_from_EBSD_orientations',
-            'req_args':['specimenSym'],
         },
         {
             'name': 'sample_ODF_orientations.m',
@@ -229,12 +229,12 @@ def sample_texture_from_CRC_file():
                 'CRC_file_path',
                 'referenceFrameTransformation',
                 'phase',
+                'specimenSym',
                 'rotationJSONPath',
             ],
         },
         {
             'name': 'get_ODF_from_EBSD_orientations',
-            'req_args':['specimenSym'],
         },
         {
             'name': 'sample_ODF_orientations.m',
@@ -263,6 +263,7 @@ def sample_orientations_from_CTF_file():
                 'CTF_file_path',
                 'referenceFrameTransformation',
                 'phase',
+                'specimenSym',
                 'rotationJSONPath',
             ],
         },
@@ -293,6 +294,7 @@ def sample_orientations_from_CRC_file():
                 'CRC_file_path',
                 'referenceFrameTransformation',
                 'phase',
+                'specimenSym',
                 'rotationJSONPath',
             ],
         },

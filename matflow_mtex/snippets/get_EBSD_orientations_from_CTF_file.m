@@ -1,4 +1,4 @@
-function EBSD_orientations = get_EBSD_orientations_from_CTF_file(CTF_file_path, referenceFrameTransformation, phase, rotationJSONPath)
+function EBSD_orientations = get_EBSD_orientations_from_CTF_file(CTF_file_path, referenceFrameTransformation, phase, specimenSym, rotationJSONPath)
 
     if isempty(referenceFrameTransformation)
         referenceFrameTransformation = {};
@@ -26,4 +26,5 @@ function EBSD_orientations = get_EBSD_orientations_from_CTF_file(CTF_file_path, 
     end
 
     EBSD_orientations = ebsd(phase).orientations;
+    EBSD_orientations.SS = specimenSymmetry(specimenSym);
 end
