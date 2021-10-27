@@ -199,7 +199,7 @@ def sample_texture_from_CTF_file():
             ],
         },
         {
-            'name': 'get_ODF_from_EBSD_orientations',
+            'name': 'get_ODF_from_EBSD_orientations.m',
         },
         {
             'name': 'sample_ODF_orientations.m',
@@ -234,7 +234,7 @@ def sample_texture_from_CRC_file():
             ],
         },
         {
-            'name': 'get_ODF_from_EBSD_orientations',
+            'name': 'get_ODF_from_EBSD_orientations.m',
         },
         {
             'name': 'sample_ODF_orientations.m',
