@@ -31,36 +31,36 @@ function ODF = get_model_ODF(ODFComponentDefnsJSONPath, crystalSym, specimenSym)
             );
             ODFComponent = unimodalODF(modalOri, kernel);
             
-        elseif strcmp(ODFComponentsDefns{i}.type, 'uniform')
+        elseif strcmp(comp.type, 'uniform')
             ODFComponent = uniformODF(crystalSym, specimenSym);
             
-        elseif strcmp(ODFComponentsDefns{i}.type, 'fibre')        
+        elseif strcmp(comp.type, 'fibre')        
             kernel = deLaValleePoussinKernel(...
                 'halfwidth',...
                 comp.halfwidth*degree...
             );
-            if strcmp(ODFComponentsDefns{i}.mtexfibre, 'alpha')
+            if strcmp(comp.mtexfibre, 'alpha')
                 ODFComponent = fibreODF(fibre.alpha(crystalSym,specimenSym),kernel);
                 
-            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'beta')
+            elseif strcmp(comp.mtexfibre, 'beta')
                 ODFComponent = fibreODF(fibre.beta(crystalSym,specimenSym),kernel);
                 
-            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'epsilon')
+            elseif strcmp(comp.mtexfibre, 'epsilon')
                 ODFComponent = fibreODF(fibre.epsilon(crystalSym,specimenSym),kernel); 
                 
-            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'eta')
+            elseif strcmp(comp.mtexfibre, 'eta')
                 ODFComponent = fibreODF(fibre.eta(crystalSym,specimenSym),kernel);
                 
-            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'fit')
+            elseif strcmp(comp.mtexfibre, 'fit')
                 ODFComponent = fibreODF(fibre.fit(crystalSym,specimenSym),kernel);
                 
-            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'gamma')
+            elseif strcmp(comp.mtexfibre, 'gamma')
                 ODFComponent = fibreODF(fibre.gamma(crystalSym,specimenSym),kernel);
                 
-            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'rand')
+            elseif strcmp(comp.mtexfibre, 'rand')
                 ODFComponent = fibreODF(fibre.rand(crystalSym,specimenSym),kernel); 
                 
-            elseif strcmp(ODFComponentsDefns{i}.mtexfibre, 'tau')
+            elseif strcmp(comp.mtexfibre, 'tau')
                 ODFComponent = fibreODF(fibre.tau(crystalSym,specimenSym),kernel); 
             end
             
