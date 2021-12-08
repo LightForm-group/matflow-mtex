@@ -40,29 +40,42 @@ function ODF = get_model_ODF(ODFComponentDefnsJSONPath, crystalSym, specimenSym)
                 comp.halfwidth * degree ...
             );
 
-            if strcmp(comp.mtexfibre, 'alpha')
-                ODFComponent = fibreODF(fibre.alpha(crystalSym, specimenSym), kernel);
+            if isfield(comp, 'mtexfibre')
 
-            elseif strcmp(comp.mtexfibre, 'beta')
-                ODFComponent = fibreODF(fibre.beta(crystalSym, specimenSym), kernel);
+                if strcmp(comp.mtexfibre, 'alpha')
+                    ODFComponent = fibreODF(fibre.alpha(crystalSym, specimenSym), kernel);
 
-            elseif strcmp(comp.mtexfibre, 'epsilon')
-                ODFComponent = fibreODF(fibre.epsilon(crystalSym, specimenSym), kernel);
+                elseif strcmp(comp.mtexfibre, 'beta')
+                    ODFComponent = fibreODF(fibre.beta(crystalSym, specimenSym), kernel);
 
-            elseif strcmp(comp.mtexfibre, 'eta')
-                ODFComponent = fibreODF(fibre.eta(crystalSym, specimenSym), kernel);
+                elseif strcmp(comp.mtexfibre, 'epsilon')
+                    ODFComponent = fibreODF(fibre.epsilon(crystalSym, specimenSym), kernel);
 
-            elseif strcmp(comp.mtexfibre, 'fit')
-                ODFComponent = fibreODF(fibre.fit(crystalSym, specimenSym), kernel);
+                elseif strcmp(comp.mtexfibre, 'eta')
+                    ODFComponent = fibreODF(fibre.eta(crystalSym, specimenSym), kernel);
 
-            elseif strcmp(comp.mtexfibre, 'gamma')
-                ODFComponent = fibreODF(fibre.gamma(crystalSym, specimenSym), kernel);
+                elseif strcmp(comp.mtexfibre, 'fit')
+                    ODFComponent = fibreODF(fibre.fit(crystalSym, specimenSym), kernel);
 
-            elseif strcmp(comp.mtexfibre, 'rand')
-                ODFComponent = fibreODF(fibre.rand(crystalSym, specimenSym), kernel);
+                elseif strcmp(comp.mtexfibre, 'gamma')
+                    ODFComponent = fibreODF(fibre.gamma(crystalSym, specimenSym), kernel);
 
-            elseif strcmp(comp.mtexfibre, 'tau')
-                ODFComponent = fibreODF(fibre.tau(crystalSym, specimenSym), kernel);
+                elseif strcmp(comp.mtexfibre, 'rand')
+                    ODFComponent = fibreODF(fibre.rand(crystalSym, specimenSym), kernel);
+
+                elseif strcmp(comp.mtexfibre, 'tau')
+                    ODFComponent = fibreODF(fibre.tau(crystalSym, specimenSym), kernel);
+                end
+
+            elseif isfield(comp, 'fibreCrystalDir')
+
+                fibreCrystalDir = num2cell(comp.fibreCrystalDir)
+                f = fibre( ...
+                    Miller(fibreCrystalDir{:}, crystalSym), ...
+                    vector3d.(upper(comp.fibreSpecimenDir)) ...
+                )
+                ODFComponent = fibreODF(f, kernel)
+
             end
 
         end
