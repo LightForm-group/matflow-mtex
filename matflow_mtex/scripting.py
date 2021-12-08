@@ -30,6 +30,7 @@ SNIPPETS_ARG_TYPES = {
     'plot_pole_figure.m': {
         'ensure_types': {
             'poleFigureDirections': '2D_cell_array',
+            'use_contours': 'double',
         }
     },
 }

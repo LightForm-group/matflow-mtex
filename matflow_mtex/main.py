@@ -326,6 +326,7 @@ def plot_pole_figure():
                 'orientationsPath',
                 'crystalSym',
                 'poleFigureDirections',
+                'use_contours',
             ],
         },
     ]
@@ -571,3 +572,8 @@ def multiple_miller_indices_formatter(miller_directions):
     )
 
     return out
+
+@cli_format_mapper(input_name='use_contours', task='visualise_orientations', method='pole_figure')
+def bool_cli_formatter(arg):
+    # Note we should use the `ensure_double` snippet in the matlab script as well.
+    return f'{1 if arg else 0}'

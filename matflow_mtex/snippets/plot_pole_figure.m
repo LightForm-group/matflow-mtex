@@ -1,4 +1,4 @@
-function exitcode = plot_pole_figure(orientationsPath, crystalSym, poleFigureDirections)
+function exitcode = plot_pole_figure(orientationsPath, crystalSym, poleFigureDirections, use_contours)
 
     ori_data = jsondecode(fileread(orientationsPath));
 
@@ -62,8 +62,13 @@ function exitcode = plot_pole_figure(orientationsPath, crystalSym, poleFigureDir
 
     newMtexFigure('layout', [1, 1], 'visible', 'off');
     plotx2east;
-    plotPDF(orientations, millerDirs, 'contourf');
-    mtexColorbar;
+
+    if use_contours
+        plotPDF(orientations, millerDirs, 'contourf');
+        mtexColorbar;
+    else
+        plotPDF(orientations, millerDirs);
+    end
 
     aAxis = Miller(crystalSym.aAxis, 'xyz');
     bAxis = Miller(crystalSym.bAxis, 'xyz');
@@ -126,7 +131,7 @@ function exitcode = plot_pole_figure(orientationsPath, crystalSym, poleFigureDir
                     ori_data.orientation_coordinate_system.y, ...
                     ori_data.orientation_coordinate_system.z ...
                 }, ...
-                'backgroundcolor','w' ...
+                'backgroundcolor', 'w' ...
             )
         end
 
@@ -135,7 +140,7 @@ function exitcode = plot_pole_figure(orientationsPath, crystalSym, poleFigureDir
     annotate( ...
         [xvector, yvector, zvector], ...
         'label', {xyzLabels{1}, xyzLabels{2}, xyzLabels{3}}, ...
-        'backgroundcolor','w' ...
+        'backgroundcolor', 'w' ...
     )
 
     if ~aLabelAdded
