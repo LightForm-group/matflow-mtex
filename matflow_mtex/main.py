@@ -252,6 +252,7 @@ def sample_texture_from_CRC_file():
     }
     return out
 
+
 @sources_mapper(task='sample_orientations', method='from_CTF_file', script='sample_orientations')
 def sample_orientations_from_CTF_file():
 
@@ -283,6 +284,7 @@ def sample_orientations_from_CTF_file():
     }
     return out
 
+
 @sources_mapper(task='sample_orientations', method='from_CRC_file', script='sample_orientations')
 def sample_orientations_from_CRC_file():
 
@@ -313,6 +315,7 @@ def sample_orientations_from_CRC_file():
         }
     }
     return out
+
 
 @sources_mapper(task='visualise_orientations', method='pole_figure', script='visualise_orientations')
 @sources_mapper(task='visualise_volume_element_response', method='texture_pole_figure', script='visualise_orientations')
@@ -572,6 +575,7 @@ def multiple_miller_indices_formatter(miller_directions):
     )
 
     return out
+
 
 @cli_format_mapper(input_name='use_contours', task='visualise_orientations', method='pole_figure')
 def bool_cli_formatter(arg):
