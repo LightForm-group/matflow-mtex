@@ -4,9 +4,10 @@ import json
 import copy
 from pathlib import Path
 from textwrap import dedent
+import warnings
 
 import numpy as np
-from damask_parse.utils import validate_orientations
+from damask_parse.utils import validate_orientations, parse_inc_specs
 
 from matflow_mtex import sources_mapper, cli_format_mapper, input_mapper, output_mapper
 from matflow_mtex.scripting import get_wrapper_script
@@ -327,9 +328,8 @@ def plot_pole_figure():
             'name': 'plot_pole_figure.m',
             'req_args': [
                 'orientationsPath',
-                'crystalSym',
                 'poleFigureDirections',
-                'use_contours',
+                'use_contours',  # todo change to camel case?
             ],
         },
     ]
@@ -374,14 +374,19 @@ def write_ori_coord_sys_from_ODF(path, ODF):
     task='visualise_orientations',
     method='pole_figure',
 )
-def write_orientations(path, orientations):
+def write_orientations(path, orientations, crystal_symmetry):
+
     orientations = validate_orientations(orientations)
+
     with Path(path).open('w') as handle:
+
         if 'euler_angles' in orientations:
             orientations['euler_angles'] = np.array(orientations['euler_angles']).tolist()
         if 'quaternions' in orientations:
             orientations['quaternions'] = np.array(orientations['quaternions']).tolist()
-        json.dump(orientations, handle, indent=4)
+        orientations['crystal_symmetry'] = crystal_symmetry
+
+        json.dump([orientations], handle, indent=4)
 
 
 @input_mapper(
@@ -389,12 +394,61 @@ def write_orientations(path, orientations):
     task='visualise_volume_element_response',
     method='texture_pole_figure',
 )
-def write_orientations_from_VE_response(path, volume_element_response, increment):
-    with Path(path).open('w') as handle:
-        orientations = copy.deepcopy(volume_element_response['orientations']['data'])
+def write_orientations_from_VE_response(path, volume_element_response, increments,
+                                        crystal_symmetries, phases,
+                                        orientation_coordinate_system):
 
-        orientations['quaternions'] = orientations['quaternions'][increment].tolist()
-        json.dump(orientations, handle, indent=4)
+    if increments is None:
+        increments = [{'values': [-1]}]  # final increment only by default
+
+    oris_out = volume_element_response['field_data']['O']
+
+    phases_out = volume_element_response['field_data']['phase']
+    phases_out_dat = phases_out['data'].flatten()
+    phase_names_out = phases_out['meta']['phase_names']
+
+    if phases is None:
+        phases = [phase_names_out[0]]  # first phase only by default
+
+    phase_names_idx = [phase_names_out.index(i) for i in phases]
+
+    # 1D bool array to get which voxel orientations to include:
+    use_voxels = np.logical_or.reduce(
+        tuple([phases_out_dat == i for i in phase_names_idx])
+    )
+
+    available_incs = oris_out['meta']['increments']
+
+    ori_JSON_data = []
+    for inc in parse_inc_specs(increments, available_incs):
+        # Want to generate pole figure image for each increment
+
+        ori_dat_inc_i_index = available_incs.index(inc)
+
+        quats_inc_i = oris_out['data']['quaternions'][ori_dat_inc_i_index]
+        quats_inc_i_flat = quats_inc_i.reshape((-1, 4))
+        quats_inc_i_flat_sub = quats_inc_i_flat[use_voxels]
+
+        ori_dict_i = copy.deepcopy(oris_out['data'])
+        ori_dict_i['quaternions'] = quats_inc_i_flat_sub.tolist()
+
+        crystal_syms = set(crystal_symmetries[i] for i in phases)
+        if len(crystal_syms) > 1:
+            raise ValueError('Cannot generate a pole figure using multiple crystal '
+                             f'symmetries.')
+        else:
+            crystal_sym = list(crystal_syms)[0]
+
+        ori_dict_i['crystal_symmetry'] = crystal_sym
+        ori_dict_i['increment'] = inc
+
+        if orientation_coordinate_system:
+            ori_dict_i['orientation_coordinate_system'] = orientation_coordinate_system
+
+        ori_JSON_data.append(ori_dict_i)
+
+    with Path(path).open('w') as handle:
+        json.dump(ori_JSON_data, handle, indent=4)
 
 
 @input_mapper(
@@ -578,6 +632,7 @@ def multiple_miller_indices_formatter(miller_directions):
 
 
 @cli_format_mapper(input_name='use_contours', task='visualise_orientations', method='pole_figure')
+@cli_format_mapper(input_name='use_contours', task='visualise_volume_element_response', method='texture_pole_figure')
 def bool_cli_formatter(arg):
     # Note we should use the `ensure_double` snippet in the matlab script as well.
     return f'{1 if arg else 0}'
