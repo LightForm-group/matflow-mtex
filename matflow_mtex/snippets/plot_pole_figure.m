@@ -9,15 +9,15 @@ function exitcode = plot_pole_figure(orientationsPath, poleFigureDirections, use
 
         alignment = {};
 
-        if isfield(ori_data.unit_cell_alignment, 'x')
+        if isfield(ori_data.unit_cell_alignment, 'x');
             alignment{end + 1} = sprintf('X||%s', ori_data.unit_cell_alignment.x);
         end
 
-        if isfield(ori_data.unit_cell_alignment, 'y')
+        if isfield(ori_data.unit_cell_alignment, 'y');
             alignment{end + 1} = sprintf('Y||%s', ori_data.unit_cell_alignment.y);
         end
 
-        if isfield(ori_data.unit_cell_alignment, 'z')
+        if isfield(ori_data.unit_cell_alignment, 'z');
             alignment{end + 1} = sprintf('Z||%s', ori_data.unit_cell_alignment.z);
         end
 
@@ -43,7 +43,7 @@ function exitcode = plot_pole_figure(orientationsPath, poleFigureDirections, use
 
             if strcmp(ori_data.quat_component_ordering, 'vector-scalar')
                 % Swap to scalar-vector order:
-                quat_data = circshift(quat_data, 1, 2)
+                quat_data = circshift(quat_data, 1, 2);
             end
 
             quats = quaternion(quat_data.');
@@ -170,9 +170,9 @@ function exitcode = plot_pole_figure(orientationsPath, poleFigureDirections, use
         end
 
         if isfield(ori_data, 'increment')
-            fileName = sprintf('pole_figure_inc_%d.png', ori_data.increment)
+            fileName = sprintf('pole_figure_inc_%d.png', ori_data.increment);
         else
-            fileName = 'pole_figure.png'
+            fileName = 'pole_figure.png';
         end
 
         saveFigure(fileName);
