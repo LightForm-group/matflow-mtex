@@ -78,8 +78,7 @@ function exitcode = plot_pole_figure(orientationsPath, poleFigureDirections, use
             plotPDF( ...
                 orientations, ...
                 millerDirs, ...
-                'property', oriColors, ...
-                'all' ...
+                'property', oriColors ...
             );
 
         end
@@ -176,6 +175,15 @@ function exitcode = plot_pole_figure(orientationsPath, poleFigureDirections, use
         end
 
         saveFigure(fileName);
+
+        if PFIdx == 1 && ~use_contours
+            newMtexFigure('layout', [1, 1], 'visible', 'off');
+            plot(ipfKey);
+            saveFigure('IPF_key.png');
+        end
+
+        close all;
+
     end
 
     exitcode = 1;
