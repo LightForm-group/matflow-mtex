@@ -330,6 +330,7 @@ def plot_pole_figure():
                 'orientationsPath',
                 'poleFigureDirections',
                 'use_contours',  # todo change to camel case?
+                'IPF_reference_direction', # todo change to camel case?
             ],
         },
     ]
