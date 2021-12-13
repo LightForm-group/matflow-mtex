@@ -1,4 +1,4 @@
-function exitcode = plot_pole_figure(orientationsPath, poleFigureDirections, use_contours)
+function exitcode = plot_pole_figure(orientationsPath, poleFigureDirections, use_contours, IPF_reference_direction)
 
     allOriData = jsondecode(fileread(orientationsPath));
 
@@ -72,7 +72,16 @@ function exitcode = plot_pole_figure(orientationsPath, poleFigureDirections, use
             plotPDF(orientations, millerDirs, 'contourf');
             mtexColorbar;
         else
-            plotPDF(orientations, millerDirs);
+            ipfKey = ipfColorKey(crystalSym);
+            ipfKey.inversePoleFigureDirection = vector3d.(upper(IPF_reference_direction));
+            oriColors = ipfKey.orientation2color(orientations);
+            plotPDF( ...
+                orientations, ...
+                millerDirs, ...
+                'property', oriColors, ...
+                'all' ...
+            );
+
         end
 
         aAxis = Miller(crystalSym.aAxis, 'xyz');
