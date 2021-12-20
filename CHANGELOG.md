@@ -4,7 +4,16 @@
 
 ### Added
 
-- Add task `sample_orientations` with methods `from_CTF_file` and `from_CRC_file`. This is for randomly sampling `N` orientations directly from the EBSD data. Similar to the `sample_texture` task, but an ODF is not constructed.
+- Add task `sample_orientations` with methods `from_CTF_file` and `from_CRC_file`. This is for randomly sampling `N` orientations directly from the EBSD data. Similar to the `sample_texture` task, but an intermediate ODF is not constructed.
+- Support sampling orientations from a fibre ODF that is parametrised by a crystal direction `fibre_crystal_dir` (e.g. `[1, 0, -1, 0]`) and a parallel sample direction `fibre_specimen_dir` (`x`, `y`, or `z`).
+- Support sampling orientations from a unimodal ODF that is parametrised by a single Euler angle triplet `modal_orientation_euler` (in Bunge/degrees/MTEX hexagonal unit cell alignment `y // b`).
+- Option to either plot pole figures with filled contours or with markers using the new boolean option `use_contours` to the task: `visualise_volume_element_response/pole_figure`. If using markers, the markers will be coloured by IPF colouring. The IPF reference direction is the `z`-direction by default, but can be specified with the new option `IPF_reference_direction`.
+
+### Fixed
+- Fix `visualise_volume_element_response/pole_figure`. Users can now plot pole figures for multiple increments and for selected phases. A pre-requisite for this is that two `field_data` items are specified in the `output_map_options` of the `simulate_volume_element_loading` task:
+  - `field_name: phase`
+  - `field_name: O` (orientations).
+
 ## [0.1.8] - 2021.09.24
 
 ### Changed
