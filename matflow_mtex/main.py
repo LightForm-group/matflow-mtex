@@ -430,7 +430,16 @@ def write_orientations_from_VE_response(path, volume_element_response, increment
         quats_inc_i_flat = quats_inc_i.reshape((-1, 4))
         quats_inc_i_flat_sub = quats_inc_i_flat[use_voxels]
 
-        ori_dict_i = copy.deepcopy(oris_out['data'])
+        num_oris = quats_inc_i_flat_sub.shape[0]
+        print(f'Number of orientations is: {num_oris}')
+        if num_oris > 1000:
+            quats_inc_i_flat_sub = quats_inc_i_flat_sub[::int(num_oris / 1000)]
+            print(f'Reduced number of orientations to: {quats_inc_i_flat_sub.shape[0]}')
+
+        ori_dict_i = {
+            k: copy.deepcopy(v)
+            for k, v in oris_out['data'].items() if k != 'quaternions'
+        }
         ori_dict_i['quaternions'] = quats_inc_i_flat_sub.tolist()
 
         crystal_syms = set(crystal_symmetries[i] for i in phases)

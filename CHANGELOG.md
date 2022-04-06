@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.1.10] - 2022.xx.xx
+
+### Fixed
+
+- Sample a maximum of 1000 orientations for the pole figure in `write_orientations_from_VE_response` input mapper.
+
 ## [0.1.9] - 2021.12.20
 
 ### Added
