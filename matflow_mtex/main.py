@@ -331,6 +331,7 @@ def plot_pole_figure():
                 'poleFigureDirections',
                 'use_contours',  # todo change to camel case?
                 'IPF_reference_direction', # todo change to camel case?
+                "optionsPath",
             ],
         },
     ]
@@ -389,6 +390,26 @@ def write_orientations(path, orientations, crystal_symmetry):
 
         json.dump([orientations], handle, indent=4)
 
+@input_mapper(
+    input_file='options.json',
+    task='visualise_volume_element_response',
+    method='texture_pole_figure',
+)
+@input_mapper(
+    input_file='options.json',
+    task='visualise_orientations',
+    method='pole_figure',
+)
+def write_PF_options_json(path, colourbar_limits, use_one_colourbar):
+    
+    opts_data = {}
+    if colourbar_limits:
+        opts_data["colourbar_limits"] = colourbar_limits
+    if use_one_colourbar:
+        opts_data["use_one_colourbar"] = use_one_colourbar
+
+    with Path(path).open('w') as handle:
+        json.dump(opts_data, handle, indent=4)
 
 @input_mapper(
     input_file='orientations.json',

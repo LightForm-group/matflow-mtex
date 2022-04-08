@@ -1,6 +1,7 @@
-function exitcode = plot_pole_figure(orientationsPath, poleFigureDirections, use_contours, IPF_reference_direction)
+function exitcode = plot_pole_figure(orientationsPath, poleFigureDirections, use_contours, IPF_reference_direction, optionsPath)
 
     allOriData = jsondecode(fileread(orientationsPath));
+    allOpts = jsondecode(fileread(optionsPath));
 
     for PFIdx = 1:length(allOriData)
 
@@ -81,6 +82,16 @@ function exitcode = plot_pole_figure(orientationsPath, poleFigureDirections, use
                 'property', oriColors ...
             );
 
+        end
+
+        if isfield(allOpts, "colourbar_limits");
+            CLim(gcm, allOpts.colourbar_limits);
+        end
+
+        if isfield(allOpts, "use_one_colourbar");
+            mtexColorbar % remove colorbars
+            CLim(gcm, 'equal');
+            mtexColorbar % add a single colorbar
         end
 
         aAxis = Miller(crystalSym.aAxis, 'xyz');

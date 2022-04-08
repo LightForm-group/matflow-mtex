@@ -2,6 +2,10 @@
 
 ## [0.1.10] - 2022.xx.xx
 
+### Added
+
+- Add options `colourbar_limits` and `use_one_colourbar` to `plot_pole_figure.m` snippet.
+
 ### Fixed
 
 - Sample a maximum of 1000 orientations for the pole figure in `write_orientations_from_VE_response` input mapper.
