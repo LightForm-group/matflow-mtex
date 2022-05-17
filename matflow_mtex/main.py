@@ -344,6 +344,32 @@ def plot_pole_figure():
     return out
 
 
+@sources_mapper(task='visualise_orientations', method='odf_section', script='visualise_orientations')
+@sources_mapper(task='visualise_volume_element_response', method='texture_odf_section', script='visualise_orientations')
+def plot_odf_section():
+
+    script_name = 'visualise_orientations.m'
+    snippets = [
+        {
+            'name': 'plot_odf_section.m',
+            'req_args': [
+                'orientationsPath',
+                'poleFigureDirections',
+                'use_contours',  # todo change to camel case?
+                'IPF_reference_direction', # todo change to camel case?
+                "optionsPath",
+            ],
+        },
+    ]
+    out = {
+        'script': {
+            'content': get_wrapper_script(script_name, snippets),
+            'filename': script_name,
+        }
+    }
+    return out
+
+
 @input_mapper(input_file='ODF.txt', task='sample_texture', method='from_ODF')
 def write_ODF_file(path, ODF):
     'Write out ODF into an "MTEX" text file'
