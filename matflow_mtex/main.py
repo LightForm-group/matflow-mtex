@@ -402,6 +402,11 @@ def write_ori_coord_sys_from_ODF(path, ODF):
     task='visualise_orientations',
     method='pole_figure',
 )
+@input_mapper(
+    input_file='orientations.json',
+    task='visualise_orientations',
+    method='odf_section',
+)
 def write_orientations(path, orientations, crystal_symmetry):
 
     orientations = validate_orientations(orientations)
@@ -423,8 +428,18 @@ def write_orientations(path, orientations, crystal_symmetry):
 )
 @input_mapper(
     input_file='options.json',
+    task='visualise_volume_element_response',
+    method='texture_odf_section',
+)
+@input_mapper(
+    input_file='options.json',
     task='visualise_orientations',
     method='pole_figure',
+)
+@input_mapper(
+    input_file='options.json',
+    task='visualise_orientations',
+    method='odf_section',
 )
 def write_PF_options_json(path, colourbar_limits, use_one_colourbar):
     
@@ -441,6 +456,11 @@ def write_PF_options_json(path, colourbar_limits, use_one_colourbar):
     input_file='orientations.json',
     task='visualise_volume_element_response',
     method='texture_pole_figure',
+)
+@input_mapper(
+    input_file='orientations.json',
+    task='visualise_volume_element_response',
+    method='texture_odf_section',
 )
 def write_orientations_from_VE_response(path, volume_element_response, increments,
                                         crystal_symmetries, phases,
