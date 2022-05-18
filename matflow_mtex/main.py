@@ -696,6 +696,8 @@ def reference_frame_formatter(ref_frame):
 
 @cli_format_mapper(input_name='pole_figure_directions', task='visualise_orientations', method='pole_figure')
 @cli_format_mapper(input_name='pole_figure_directions', task='visualise_volume_element_response', method='texture_pole_figure')
+@cli_format_mapper(input_name='pole_figure_directions', task='visualise_orientations', method='odf_section')
+@cli_format_mapper(input_name='pole_figure_directions', task='visualise_volume_element_response', method='texture_odf_section')
 def multiple_miller_indices_formatter(miller_directions):
 
     out = (
