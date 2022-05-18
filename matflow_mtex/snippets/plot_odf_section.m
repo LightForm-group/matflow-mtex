@@ -177,9 +177,9 @@ function exitcode = plot_odf_section(orientationsPath, poleFigureDirections, use
         end
 
         if isfield(ori_data, 'increment')
-            fileName = sprintf('pole_figure_inc_%d.png', ori_data.increment);
+            fileName = sprintf('odf_section_inc_%d.png', ori_data.increment);
         else
-            fileName = 'pole_figure.png';
+            fileName = 'odf_section.png';
         end
 
         saveFigure(fileName);
