@@ -1,4 +1,4 @@
-function exitcode = plot_pole_figure(orientationsPath, poleFigureDirections, use_contours, IPF_reference_direction, optionsPath)
+function exitcode = plot_odf_section(orientationsPath, poleFigureDirections, use_contours, IPF_reference_direction, optionsPath)
 
     allOriData = jsondecode(fileread(orientationsPath));
     allOpts = jsondecode(fileread(optionsPath));
