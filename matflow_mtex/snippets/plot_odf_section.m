@@ -69,7 +69,7 @@ function exitcode = plot_odf_section(orientationsPath, poleFigureDirections, use
         newMtexFigure('layout', [1, 1], 'visible', 'off');
         plotx2east;
         odf = calcDensity(orientations, 'kernel', deLaValleePoussinKernel, 'halfwidth', 5*degree);
-        plotSection(odf, 'contourf', 'phi2', slice*degree, 'minmax');
+        plotSection(odf, 'contourf', 'phi2', 45*degree, 'minmax');
         mtexColorbar ('location', 'southoutside', 'title', 'mrd', 'FontSize', 24);
 
         if isfield(allOpts, "colourbar_limits");
