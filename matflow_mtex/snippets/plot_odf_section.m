@@ -68,18 +68,9 @@ function exitcode = plot_odf_section(orientationsPath, poleFigureDirections, use
 
         newMtexFigure('layout', [1, 1], 'visible', 'off');
         plotx2east;
-
-        if use_contours
-            plot(odf, 'PHI2', 45*degree);
-            mtexColorbar;
-        else
-            ipfKey = ipfColorKey(crystalSym);
-            ipfKey.inversePoleFigureDirection = vector3d.(upper(IPF_reference_direction));
-            oriColors = ipfKey.orientation2color(orientations);
-            plot(odf, 'PHI2', 45*degree);
-
-
-        end
+        odf = calcDensity(orientations, 'kernel', deLaValleePoussinKernel, 'halfwidth', 5*degree);
+        plotSection(odf, 'contourf', 'phi2', slice*degree, 'minmax');
+        mtexColorbar ('location', 'southoutside', 'title', 'mrd', 'FontSize', 24);
 
         if isfield(allOpts, "colourbar_limits");
             CLim(gcm, allOpts.colourbar_limits);
