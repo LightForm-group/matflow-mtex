@@ -354,7 +354,6 @@ def plot_odf_section():
             'name': 'plot_odf_section.m',
             'req_args': [
                 'orientationsPath',
-                'poleFigureDirections',
                 'use_contours',  # todo change to camel case?
                 'IPF_reference_direction', # todo change to camel case?
                 "optionsPath",
