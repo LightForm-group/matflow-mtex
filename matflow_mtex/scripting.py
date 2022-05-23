@@ -35,7 +35,6 @@ SNIPPETS_ARG_TYPES = {
     },
     'plot_odf_section.m': {
         'ensure_types': {
-            'poleFigureDirections': '2D_cell_array',
             'use_contours': 'double',
         }
     },

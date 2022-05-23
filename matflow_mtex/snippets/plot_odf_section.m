@@ -1,4 +1,4 @@
-function exitcode = plot_odf_section(orientationsPath, poleFigureDirections, use_contours, IPF_reference_direction, optionsPath)
+function exitcode = plot_odf_section(orientationsPath, use_contours, IPF_reference_direction, optionsPath)
 
     allOriData = jsondecode(fileread(orientationsPath));
     allOpts = jsondecode(fileread(optionsPath));
@@ -6,29 +6,23 @@ function exitcode = plot_odf_section(orientationsPath, poleFigureDirections, use
     for PFIdx = 1:length(allOriData)
 
         ori_data = allOriData(PFIdx);
-        crystalSym = ori_data.crystal_symmetry
+        crystalSym = ori_data.crystal_symmetry;
 
         alignment = {};
 
-        if isfield(ori_data.unit_cell_alignment, 'x');
+        if isfield(ori_data.unit_cell_alignment, 'x')
             alignment{end + 1} = sprintf('X||%s', ori_data.unit_cell_alignment.x);
         end
 
-        if isfield(ori_data.unit_cell_alignment, 'y');
+        if isfield(ori_data.unit_cell_alignment, 'y')
             alignment{end + 1} = sprintf('Y||%s', ori_data.unit_cell_alignment.y);
         end
 
-        if isfield(ori_data.unit_cell_alignment, 'z');
+        if isfield(ori_data.unit_cell_alignment, 'z')
             alignment{end + 1} = sprintf('Z||%s', ori_data.unit_cell_alignment.z);
         end
 
         crystalSym = crystalSymmetry(crystalSym, alignment{:});
-        millerDirs = Miller(poleFigureDirections{1}, crystalSym);
-
-        for i = 2:length(poleFigureDirections)
-            newMillerDir = Miller(poleFigureDirections{i}, crystalSym);
-            millerDirs = [millerDirs, newMillerDir];
-        end
 
         if strcmp(ori_data.type, 'quat')
 
@@ -68,103 +62,18 @@ function exitcode = plot_odf_section(orientationsPath, poleFigureDirections, use
 
         newMtexFigure('layout', [1, 1], 'visible', 'off');
         plotx2east;
-        odf = calcDensity(orientations, 'kernel', deLaValleePoussinKernel, 'halfwidth', 5*degree);
-        plotSection(odf, 'contourf', 'phi2', 45*degree, 'minmax');
+        odf = calcDensity(orientations, 'kernel', deLaValleePoussinKernel, 'halfwidth', 5 * degree);
+        plotSection(odf, 'contourf', 'phi2', 45 * degree, 'minmax');
         mtexColorbar ('location', 'southoutside', 'title', 'mrd', 'FontSize', 24);
 
-        if isfield(allOpts, "colourbar_limits");
+        if isfield(allOpts, "colourbar_limits")
             CLim(gcm, allOpts.colourbar_limits);
         end
 
-        if isfield(allOpts, "use_one_colourbar");
+        if isfield(allOpts, "use_one_colourbar")
             mtexColorbar % remove colorbars
             CLim(gcm, 'equal');
             mtexColorbar % add a single colorbar
-        end
-
-        aAxis = Miller(crystalSym.aAxis, 'xyz');
-        bAxis = Miller(crystalSym.bAxis, 'xyz');
-        cAxis = Miller(crystalSym.cAxis, 'xyz');
-
-        xyzVecs = eye(3);
-        xyzLabels = {'x', 'y', 'z'};
-        aLabelAdded = 0;
-        bLabelAdded = 0;
-        cLabelAdded = 0;
-
-        for i = 1:3
-
-            if round(aAxis.xyz, 10) == xyzVecs(i, :)
-                aLabelAdded = 1;
-                xyzLabels(i) = append(xyzLabels(i), '/a');
-            end
-
-            if round(bAxis.xyz, 10) == xyzVecs(i, :)
-                bLabelAdded = 1;
-                xyzLabels(i) = append(xyzLabels(i), '/b');
-            end
-
-            if round(cAxis.xyz, 10) == xyzVecs(i, :)
-                cLabelAdded = 1;
-                xyzLabels(i) = append(xyzLabels(i), '/c');
-            end
-
-        end
-
-        if isfield(ori_data, 'orientation_coordinate_system')
-
-            if isstruct(ori_data.orientation_coordinate_system)
-
-                if isfield(ori_data.orientation_coordinate_system, 'x')
-                    xyzLabels(1) = append( ...
-                        xyzLabels(1), ...
-                        sprintf('/%s', ori_data.orientation_coordinate_system.x) ...
-                    );
-                end
-
-                if isfield(ori_data.orientation_coordinate_system, 'y')
-                    xyzLabels(2) = append( ...
-                        xyzLabels(2), ...
-                        sprintf('/%s', ori_data.orientation_coordinate_system.y) ...
-                    );
-                end
-
-                if isfield(ori_data.orientation_coordinate_system, 'z')
-                    xyzLabels(3) = append( ...
-                        xyzLabels(3), ...
-                        sprintf('/%s', ori_data.orientation_coordinate_system.z) ...
-                    );
-                end
-
-                annotate( ...
-                    [xvector, yvector, zvector], ...
-                    'label', { ...
-                        ori_data.orientation_coordinate_system.x, ...
-                        ori_data.orientation_coordinate_system.y, ...
-                        ori_data.orientation_coordinate_system.z ...
-                    }, ...
-                    'backgroundcolor', 'w' ...
-                )
-            end
-
-        end
-
-        annotate( ...
-            [xvector, yvector, zvector], ...
-            'label', {xyzLabels{1}, xyzLabels{2}, xyzLabels{3}}, ...
-            'backgroundcolor', 'w' ...
-        )
-
-        if ~aLabelAdded
-            annotate([crystalSym.aAxis], 'label', {'a'}, 'backgroundcolor', 'w');
-        end
-
-        if ~bLabelAdded
-            annotate([crystalSym.bAxis], 'label', {'b'}, 'backgroundcolor', 'w');
-        end
-
-        if ~cLabelAdded
-            annotate([crystalSym.cAxis], 'label', {'c'}, 'backgroundcolor', 'w');
         end
 
         if isfield(ori_data, 'increment')
