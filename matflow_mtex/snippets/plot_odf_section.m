@@ -1,4 +1,4 @@
-function exitcode = plot_odf_section(orientationsPath, use_contours, IPF_reference_direction, optionsPath)
+function exitcode = plot_odf_section(orientationsPath, optionsPath)
 
     allOriData = jsondecode(fileread(orientationsPath));
     allOpts = jsondecode(fileread(optionsPath));
@@ -64,17 +64,6 @@ function exitcode = plot_odf_section(orientationsPath, use_contours, IPF_referen
         plotx2east;
         odf = calcDensity(orientations, 'kernel', deLaValleePoussinKernel, 'halfwidth', 5 * degree);
         plotSection(odf, 'contourf', 'phi2', 45 * degree, 'minmax');
-        mtexColorbar ('location', 'southoutside', 'title', 'mrd', 'FontSize', 24);
-
-        if isfield(allOpts, "colourbar_limits")
-            CLim(gcm, allOpts.colourbar_limits);
-        end
-
-        if isfield(allOpts, "use_one_colourbar")
-            mtexColorbar % remove colorbars
-            CLim(gcm, 'equal');
-            mtexColorbar % add a single colorbar
-        end
 
         if isfield(ori_data, 'increment')
             fileName = sprintf('odf_section_inc_%d.png', ori_data.increment);
@@ -83,13 +72,6 @@ function exitcode = plot_odf_section(orientationsPath, use_contours, IPF_referen
         end
 
         saveFigure(fileName);
-
-        if PFIdx == 1 && ~use_contours
-            newMtexFigure('layout', [1, 1], 'visible', 'off');
-            plot(ipfKey);
-            saveFigure('IPF_key.png');
-        end
-
         close all;
 
     end

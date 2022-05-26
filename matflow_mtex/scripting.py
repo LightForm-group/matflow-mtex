@@ -34,9 +34,7 @@ SNIPPETS_ARG_TYPES = {
         }
     },
     'plot_odf_section.m': {
-        'ensure_types': {
-            'use_contours': 'double',
-        }
+        'ensure_types': {}
     },
 }
 

@@ -354,8 +354,6 @@ def plot_odf_section():
             'name': 'plot_odf_section.m',
             'req_args': [
                 'orientationsPath',
-                'use_contours',  # todo change to camel case?
-                'IPF_reference_direction', # todo change to camel case?
                 "optionsPath",
             ],
         },
@@ -709,8 +707,6 @@ def multiple_miller_indices_formatter(miller_directions):
 
 @cli_format_mapper(input_name='use_contours', task='visualise_orientations', method='pole_figure')
 @cli_format_mapper(input_name='use_contours', task='visualise_volume_element_response', method='texture_pole_figure')
-@cli_format_mapper(input_name='use_contours', task='visualise_orientations', method='odf_section')
-@cli_format_mapper(input_name='use_contours', task='visualise_volume_element_response', method='texture_odf_section')
 def bool_cli_formatter(arg):
     # Note we should use the `ensure_double` snippet in the matlab script as well.
     return f'{1 if arg else 0}'
