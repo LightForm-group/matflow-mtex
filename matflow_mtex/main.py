@@ -154,6 +154,30 @@ def sample_texture_from_ODF():
     return out
 
 
+@sources_mapper(task='sample_texture', method='from_ODF_mat', script='sample_texture')
+def sample_texture_from_ODF():
+
+    script_name = 'sample_texture.m'
+    snippets = [
+        {
+            'name': 'load_ODF_mat.m',
+            'req_args': ['crystalSym', 'specimenSym'],
+        },
+        {
+            'name': 'sample_ODF_orientations.m',
+            'req_args': ['numOrientations'],
+        },
+        {'name': 'export_orientations.m'},
+    ]
+    out = {
+        'script': {
+            'content': get_wrapper_script(script_name, snippets),
+            'filename': script_name,
+        }
+    }
+    return out
+
+
 @sources_mapper(task='sample_texture', method='from_model_ODF', script='sample_texture')
 def sample_texture_from_model_ODF():
 
