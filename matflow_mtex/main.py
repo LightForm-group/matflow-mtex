@@ -369,6 +369,7 @@ def plot_pole_figure():
 
 
 @input_mapper(input_file='ODF.txt', task='sample_texture', method='from_ODF')
+@input_mapper(input_file='ODF.mat', task='sample_texture', method='from_ODF_mat')
 def write_ODF_file(path, ODF):
     'Write out ODF into an "MTEX" text file'
 
@@ -389,6 +390,11 @@ def write_ODF_file(path, ODF):
     input_file='orientation_coordinate_system.json',
     task='sample_texture',
     method='from_ODF',
+)
+@input_mapper(
+    input_file='orientation_coordinate_system.json',
+    task='sample_texture',
+    method='from_ODF_mat',
 )
 def write_ori_coord_sys_from_ODF(path, ODF):
     with Path(path).open('w') as handle:
@@ -579,6 +585,7 @@ def parse_MTEX_ODF_file(path, orientation_coordinate_system):
 
 
 @output_mapper(output_name='orientations', task='sample_texture', method='from_ODF')
+@output_mapper(output_name='orientations', task='sample_texture', method='from_ODF_mat')
 def parse_orientations(path, ori_coord_sys_path):
 
     with Path(path).open() as handle:
