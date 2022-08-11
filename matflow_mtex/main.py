@@ -161,7 +161,7 @@ def sample_texture_from_ODF():
     snippets = [
         {
             'name': 'load_ODF_mat.m',
-            'req_args': ['crystalSym', 'specimenSym'],
+            'req_args': ['ODF_mat_path', 'crystalSym', 'specimenSym'],
         },
         {
             'name': 'sample_ODF_orientations.m',
