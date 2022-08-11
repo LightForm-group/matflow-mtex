@@ -586,7 +586,7 @@ def parse_MTEX_ODF_file(path, orientation_coordinate_system):
 
 @output_mapper(output_name='orientations', task='sample_texture', method='from_ODF')
 @output_mapper(output_name='orientations', task='sample_texture', method='from_ODF_mat')
-def parse_orientations(path, ori_coord_sys_path):
+def parse_orientations(path, orientation_coordinate_system):
 
     with Path(path).open() as handle:
         ln = handle.readline()
@@ -594,13 +594,10 @@ def parse_orientations(path, ori_coord_sys_path):
 
     euler_angles = np.loadtxt(str(path), skiprows=1, ndmin=2)
 
-    with Path(ori_coord_sys_path).open() as handle:
-        ori_coord_sys = json.load(handle)
-
     orientations = {
         'euler_angle_labels': euler_angle_labels,
         'euler_angles': euler_angles,
-        'orientation_coordinate_system': ori_coord_sys,
+        'orientation_coordinate_system': orientation_coordinate_system,
     }
     return orientations
 
