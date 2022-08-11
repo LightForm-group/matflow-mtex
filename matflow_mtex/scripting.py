@@ -25,6 +25,7 @@ SNIPPETS_ARG_TYPES = {
     'randomly_sample_EBSD_orientations.m': {'ensure_types': {'numOrientations': 'double'}},
     'sample_ODF_orientations.m': {'ensure_types': {'numOrientations': 'double'}},
     'load_ODF.m': {'defaults': {'ODF_path': 'ODF.txt'}},
+    'load_ODF_mat.m': {},
     'export_orientations.m': {'defaults': {'fileName': 'orientations.txt'}},
     'export_orientations_JSON.m': {'defaults': {'fileName': 'orientations.json'}},
     'plot_pole_figure.m': {
