@@ -155,7 +155,7 @@ def sample_texture_from_ODF():
 
 
 @sources_mapper(task='sample_texture', method='from_ODF_mat', script='sample_texture')
-def sample_texture_from_ODF():
+def sample_texture_from_ODF_mat():
 
     script_name = 'sample_texture.m'
     snippets = [
@@ -167,7 +167,9 @@ def sample_texture_from_ODF():
             'name': 'sample_ODF_orientations.m',
             'req_args': ['numOrientations'],
         },
-        {'name': 'export_orientations.m'},
+        {
+            'name': 'export_orientations_JSON.m'
+        },
     ]
     out = {
         'script': {
@@ -369,7 +371,6 @@ def plot_pole_figure():
 
 
 @input_mapper(input_file='ODF.txt', task='sample_texture', method='from_ODF')
-@input_mapper(input_file='ODF.mat', task='sample_texture', method='from_ODF_mat')
 def write_ODF_file(path, ODF):
     'Write out ODF into an "MTEX" text file'
 
@@ -390,11 +391,6 @@ def write_ODF_file(path, ODF):
     input_file='orientation_coordinate_system.json',
     task='sample_texture',
     method='from_ODF',
-)
-@input_mapper(
-    input_file='orientation_coordinate_system.json',
-    task='sample_texture',
-    method='from_ODF_mat',
 )
 def write_ori_coord_sys_from_ODF(path, ODF):
     with Path(path).open('w') as handle:
@@ -585,7 +581,6 @@ def parse_MTEX_ODF_file(path, orientation_coordinate_system):
 
 
 @output_mapper(output_name='orientations', task='sample_texture', method='from_ODF')
-@output_mapper(output_name='orientations', task='sample_texture', method='from_ODF_mat')
 def parse_orientations(path, orientation_coordinate_system):
 
     with Path(path).open() as handle:
@@ -605,6 +600,7 @@ def parse_orientations(path, orientation_coordinate_system):
 @output_mapper(output_name='orientations', task='sample_texture', method='from_model_ODF')
 @output_mapper(output_name='orientations', task='sample_texture', method='from_CTF_file')
 @output_mapper(output_name='orientations', task='sample_texture', method='from_CRC_file')
+@output_mapper(output_name='orientations', task='sample_texture', method='from_ODF_mat')
 @output_mapper(output_name='orientations', task='sample_orientations', method='from_CTF_file')
 @output_mapper(output_name='orientations', task='sample_orientations', method='from_CRC_file')
 def parse_orientations_JSON(path, orientation_coordinate_system):
