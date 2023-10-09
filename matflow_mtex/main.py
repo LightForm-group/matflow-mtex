@@ -370,6 +370,32 @@ def plot_pole_figure():
     return out
 
 
+@sources_mapper(task='visualise_orientations', method='odf_section', script='visualise_orientations')
+@sources_mapper(task='visualise_volume_element_response', method='texture_odf_section', script='visualise_orientations')
+def plot_odf_section():
+
+    script_name = 'visualise_orientations.m'
+    snippets = [
+        {
+            'name': 'plot_odf_section.m',
+            'req_args': [
+                'orientationsPath',
+                'poleFigureDirections',
+                'use_contours',  # todo change to camel case?
+                'IPF_reference_direction', # todo change to camel case?
+                "optionsPath",
+            ],
+        },
+    ]
+    out = {
+        'script': {
+            'content': get_wrapper_script(script_name, snippets),
+            'filename': script_name,
+        }
+    }
+    return out
+
+
 @input_mapper(input_file='ODF.txt', task='sample_texture', method='from_ODF')
 def write_ODF_file(path, ODF):
     'Write out ODF into an "MTEX" text file'
@@ -402,6 +428,11 @@ def write_ori_coord_sys_from_ODF(path, ODF):
     task='visualise_orientations',
     method='pole_figure',
 )
+@input_mapper(
+    input_file='orientations.json',
+    task='visualise_orientations',
+    method='odf_section',
+)
 def write_orientations(path, orientations, crystal_symmetry):
 
     orientations = validate_orientations(orientations)
@@ -423,8 +454,18 @@ def write_orientations(path, orientations, crystal_symmetry):
 )
 @input_mapper(
     input_file='options.json',
+    task='visualise_volume_element_response',
+    method='texture_odf_section',
+)
+@input_mapper(
+    input_file='options.json',
     task='visualise_orientations',
     method='pole_figure',
+)
+@input_mapper(
+    input_file='options.json',
+    task='visualise_orientations',
+    method='odf_section',
 )
 def write_PF_options_json(path, colourbar_limits, use_one_colourbar):
     
@@ -441,6 +482,11 @@ def write_PF_options_json(path, colourbar_limits, use_one_colourbar):
     input_file='orientations.json',
     task='visualise_volume_element_response',
     method='texture_pole_figure',
+)
+@input_mapper(
+    input_file='orientations.json',
+    task='visualise_volume_element_response',
+    method='texture_odf_section',
 )
 def write_orientations_from_VE_response(path, volume_element_response, increments,
                                         crystal_symmetries, phases,
@@ -674,6 +720,8 @@ def reference_frame_formatter(ref_frame):
 
 @cli_format_mapper(input_name='pole_figure_directions', task='visualise_orientations', method='pole_figure')
 @cli_format_mapper(input_name='pole_figure_directions', task='visualise_volume_element_response', method='texture_pole_figure')
+@cli_format_mapper(input_name='pole_figure_directions', task='visualise_orientations', method='odf_section')
+@cli_format_mapper(input_name='pole_figure_directions', task='visualise_volume_element_response', method='texture_odf_section')
 def multiple_miller_indices_formatter(miller_directions):
 
     out = (
@@ -688,6 +736,8 @@ def multiple_miller_indices_formatter(miller_directions):
 
 @cli_format_mapper(input_name='use_contours', task='visualise_orientations', method='pole_figure')
 @cli_format_mapper(input_name='use_contours', task='visualise_volume_element_response', method='texture_pole_figure')
+@cli_format_mapper(input_name='use_contours', task='visualise_orientations', method='odf_section')
+@cli_format_mapper(input_name='use_contours', task='visualise_volume_element_response', method='texture_odf_section')
 def bool_cli_formatter(arg):
     # Note we should use the `ensure_double` snippet in the matlab script as well.
     return f'{1 if arg else 0}'
