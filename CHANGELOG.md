@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.1.11] - 2023.10.09
+
+### Added
+
+- Add `sample_texture` method `from_ODF_mat`
+
 ## [0.1.10] - 2022.04.12
 
 ### Added
